@@ -11,14 +11,24 @@ import kotlinx.android.synthetic.main.activity_chat.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
+import okio.BufferedSink
+import okio.BufferedSource
+import okio.Okio
 import xin.z7workbench.recipie.R
 import xin.z7workbench.recipie.entity.ChatMessage
+import java.io.IOException
+import java.net.Socket
 import java.util.*
 
 class ChatActivity : AppCompatActivity() {
 
     lateinit var adapter: ChatMessageAdapter
-    lateinit var chatClient: ChatClient
+
+    lateinit var socket: Socket
+    lateinit var sink: BufferedSink
+    lateinit var source: BufferedSource
+
+    var username = "ZeroGo"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,8 +36,7 @@ class ChatActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
         recycler.layoutManager = LinearLayoutManager(this)
-        adapter = ChatMessageAdapter(this, ArrayList<ChatMessage>())
-        adapter.add(ChatMessage("welcome"))
+        adapter = ChatMessageAdapter(this, ArrayList())
         recycler.adapter = adapter
 
         button_submit.setOnClickListener(View.OnClickListener {
@@ -39,36 +48,57 @@ class ChatActivity : AppCompatActivity() {
             edit_question.setText("")
         })
 
+        connect()
     }
 
     private fun connect() = async(UI) {
         async(CommonPool) {
-            chatClient = ChatClient()
+            try {
+                socket = Socket("123.206.13.211", 8964)
+                sink = Okio.buffer(Okio.sink(socket))
+                source = Okio.buffer(Okio.source(socket))
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
         }.await()
+        Thread(receiver).start()
+        sendMessage(username)
+    }
+
+    private val receiver = Runnable {
+        while (true) {
+            try {
+                if (!socket.isConnected) continue
+                if (socket.isInputShutdown) continue
+                val content = source.readUtf8Line() ?: continue
+                runOnUiThread { showMessage(content) }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
     }
 
     private fun sendMessage(message: String) = async(UI) {
-        val chatMessage = ChatMessage(message, true, false)
-        adapter.add(chatMessage)
         async(CommonPool) {
-            chatClient.send(message)
+            if (socket.isConnected) {
+                if (!socket.isOutputShutdown) {
+                    sink.writeUtf8("$username:$message\n")
+                    sink.flush()
+                }
+            }
         }.await()
 
-        recycler.scrollToPosition(adapter.itemCount - 1)
-        getResult(message)
-    }
-
-    private fun getResult(message: String) = async(UI) {
-        var msg = ""
-        async(CommonPool) { msg = chatClient.receive() }.await()
-        val chatMessage = ChatMessage(msg, false, false)
+        val chatMessage = ChatMessage(message, true, false)
         adapter.add(chatMessage)
 
         recycler.scrollToPosition(adapter.itemCount - 1)
     }
 
-    private fun disconnect()= async(UI) {
-        chatClient.disconnect()
+    private fun showMessage(message: String) {
+        val chatMessage = ChatMessage(message, false, false)
+        adapter.add(chatMessage)
+
+        recycler.scrollToPosition(adapter.itemCount - 1)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -86,7 +116,7 @@ class ChatActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        disconnect()
+        socket.close()
         super.onBackPressed()
     }
 }
