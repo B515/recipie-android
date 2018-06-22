@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">真香</string>
+    <string name="title_activity_result">结果</string>
+    <string name="submit">发送</string>
+    <string name="input_hint">输入消息</string>
 </resources>
