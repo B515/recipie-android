@@ -9,8 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 import me.himanshusoni.chatmessageview.ChatMessageView
 import xin.z7workbench.recipie.R
 import xin.z7workbench.recipie.entity.ChatMessage
-import java.text.SimpleDateFormat
-import java.util.*
 
 class ChatMessageAdapter(private val context: Context, private val messages: MutableList<ChatMessage>) : RecyclerView.Adapter<ChatMessageAdapter.MessageHolder>() {
     override fun getItemCount(): Int = messages.size
@@ -33,7 +31,7 @@ class ChatMessageAdapter(private val context: Context, private val messages: Mut
             holder.message.text = chatMessage.content
         }
 
-        holder.time.text = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
+        holder.time.text = chatMessage.time
 
         holder.messageView.setOnClickListener { }
     }
