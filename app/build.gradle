@@ -11,7 +11,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "xin.z7workbench.recipie"
-        minSdkVersion 25
+        minSdkVersion 24
         targetSdkVersion 28
         versionCode gitCommitCount.toInteger()
         versionName "1.0"
