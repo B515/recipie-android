@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="5dp">
+
+    <TextView
+        android:id="@+id/username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="6dp" />
 
     <me.himanshusoni.chatmessageview.ChatMessageView
         android:id="@+id/message_view"
@@ -27,8 +32,8 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingLeft="8dp"
-            android:paddingRight="8dp"
-            android:paddingTop="8dp">
+            android:paddingTop="8dp"
+            android:paddingRight="8dp">
 
             <ImageView
                 android:id="@+id/image"
@@ -38,7 +43,7 @@
                 android:adjustViewBounds="true"
                 android:contentDescription="@string/app_name"
                 android:maxWidth="200dp"
-                android:src="@mipmap/ic_launcher"/>
+                android:src="@mipmap/ic_launcher" />
 
             <TextView
                 android:id="@+id/message"
@@ -47,7 +52,7 @@
                 android:maxWidth="200dp"
                 android:text="@string/app_name"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                android:textSize="18sp"/>
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/time"
@@ -57,7 +62,7 @@
                 android:layout_marginBottom="8dp"
                 android:text="@string/app_name"
                 android:textAppearance="@style/TextAppearance.AppCompat.Caption"
-                android:textSize="12sp"/>
+                android:textSize="12sp" />
         </LinearLayout>
     </me.himanshusoni.chatmessageview.ChatMessageView>
 </LinearLayout>

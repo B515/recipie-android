@@ -16,7 +16,6 @@ import okio.BufferedSink
 import okio.BufferedSource
 import okio.Okio
 import xin.z7workbench.recipie.R
-import xin.z7workbench.recipie.entity.ChatMessage
 import xin.z7workbench.recipie.entity.LoginMessage
 import xin.z7workbench.recipie.entity.ServerMessage
 import java.io.IOException
@@ -51,8 +50,7 @@ class ChatActivity : AppCompatActivity() {
                 return@OnClickListener
             }
 
-            val message = ServerMessage("all", "", username, now(), "text", text, null)
-            sendMessage(text, gson.toJson(message))
+            sendTextMessage(text)
             edit_question.setText("")
         })
 
@@ -71,7 +69,7 @@ class ChatActivity : AppCompatActivity() {
         }.await()
         Thread(receiver).start()
 
-        sendMessage(username, gson.toJson(LoginMessage(username)))
+        sendMessage(gson.toJson(LoginMessage(username)))
     }
 
     private val receiver = Runnable {
@@ -87,7 +85,19 @@ class ChatActivity : AppCompatActivity() {
         }
     }
 
-    private fun sendMessage(message: String, json: String) = async(UI) {
+    private fun sendTextMessage(text: String) {
+        val message = ServerMessage("all", "", username, now(), "text", text, null, true)
+        sendMessage(gson.toJson(message))
+
+        adapter.add(message)
+        recycler.scrollToPosition(adapter.itemCount - 1)
+    }
+
+    private fun sendImageMessage() {
+
+    }
+
+    private fun sendMessage(json: String) = async(UI) {
         async(CommonPool) {
             if (socket.isConnected) {
                 if (!socket.isOutputShutdown) {
@@ -96,21 +106,14 @@ class ChatActivity : AppCompatActivity() {
                 }
             }
         }.await()
-
-        val chatMessage = ChatMessage(message, now(), true, false)
-        adapter.add(chatMessage)
-
-        recycler.scrollToPosition(adapter.itemCount - 1)
     }
 
     private fun showMessage(json: String) {
         val message = gson.fromJson<ServerMessage>(json, ServerMessage::class.java)
-        val str = "${message.FromUser}:${message.Content}"
-        val chatMessage = ChatMessage(str, message.CreateTime, false, false)
-        adapter.add(chatMessage)
-        online_users.text = "OnlineUsers:${message.OnlineUser?.joinToString()}"
-
+        adapter.add(message)
         recycler.scrollToPosition(adapter.itemCount - 1)
+
+        online_users.text = "OnlineUsers:${message.OnlineUser?.joinToString()}"
     }
 
     private fun now(): String {
