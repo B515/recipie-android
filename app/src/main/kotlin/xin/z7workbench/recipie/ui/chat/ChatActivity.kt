@@ -1,12 +1,14 @@
 package xin.z7workbench.recipie.ui.chat
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.chip.Chip
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_chat.*
 import kotlinx.coroutines.experimental.CommonPool
@@ -44,15 +46,21 @@ class ChatActivity : AppCompatActivity() {
         recycler.adapter = adapter
         gson = Gson()
 
-        button_submit.setOnClickListener(View.OnClickListener {
+        button_submit.setOnClickListener {
             val text = edit_question.text.toString()
             if (TextUtils.isEmpty(text)) {
-                return@OnClickListener
+                return@setOnClickListener
             }
 
             sendTextMessage(text)
             edit_question.setText("")
-        })
+        }
+        button_send_image.setOnClickListener {
+            selectFile(imageOnly = true)
+        }
+        button_send_file.setOnClickListener {
+            selectFile()
+        }
 
         connect()
     }
@@ -113,12 +121,38 @@ class ChatActivity : AppCompatActivity() {
         adapter.add(message)
         recycler.scrollToPosition(adapter.itemCount - 1)
 
-        online_users.text = "OnlineUsers:${message.OnlineUser?.joinToString()}"
+        updateOnlineUsers(message.OnlineUser ?: listOf())
+    }
+
+    private fun updateOnlineUsers(users: List<String>) {
+        online_users.removeAllViews()
+        users.forEach {
+            val chip = Chip(this)
+            chip.text = it
+            chip.setPadding(16, 10, 16, 10)
+            online_users.addView(chip)
+        }
     }
 
     private fun now(): String {
         val sdf = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
         return sdf.format(Date())
+    }
+
+    private fun selectFile(imageOnly: Boolean = false) {
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.addCategory(Intent.CATEGORY_OPENABLE)
+        intent.type = if (imageOnly) "image/*" else "*/*"
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false)
+        startActivityForResult(intent, 1)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
+            data?.let {
+                val uri = data.data
+            }
+        } else super.onActivityResult(requestCode, resultCode, data)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

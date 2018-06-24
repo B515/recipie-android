@@ -27,12 +27,22 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <TextView
+            android:id="@+id/online_users_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:text="在线用户"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.chip.ChipGroup
             android:id="@+id/online_users"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_above="@id/recycler"
+            android:layout_margin="8dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@id/online_users_text"
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.recyclerview.widget.RecyclerView
@@ -66,6 +76,20 @@
                 android:layout_weight="1"
                 android:hint="@string/input_hint"
                 android:inputType="text" />
+
+            <Button
+                android:id="@+id/button_send_image"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:text="图片" />
+
+            <Button
+                android:id="@+id/button_send_file"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:text="文件" />
 
             <Button
                 android:id="@+id/button_submit"
