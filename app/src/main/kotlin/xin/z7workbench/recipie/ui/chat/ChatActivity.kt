@@ -2,24 +2,34 @@ package xin.z7workbench.recipie.ui.chat
 
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Base64
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toFile
+import androidx.core.widget.toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.chip.Chip
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import com.google.gson.JsonParser
 import kotlinx.android.synthetic.main.activity_chat.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.delay
 import okio.BufferedSink
 import okio.BufferedSource
 import okio.Okio
 import xin.z7workbench.recipie.R
+import xin.z7workbench.recipie.entity.FileInfoMessage
+import xin.z7workbench.recipie.entity.FileMessage
 import xin.z7workbench.recipie.entity.LoginMessage
 import xin.z7workbench.recipie.entity.ServerMessage
+import xin.z7workbench.recipie.util.rand
 import java.io.IOException
 import java.net.Socket
 import java.text.SimpleDateFormat
@@ -44,7 +54,7 @@ class ChatActivity : AppCompatActivity() {
         recycler.layoutManager = LinearLayoutManager(this)
         adapter = ChatMessageAdapter(this, ArrayList())
         recycler.adapter = adapter
-        gson = Gson()
+        gson = GsonBuilder().disableHtmlEscaping().create()
 
         button_submit.setOnClickListener {
             val text = edit_question.text.toString()
@@ -81,15 +91,15 @@ class ChatActivity : AppCompatActivity() {
     }
 
     private val receiver = Runnable {
-        while (true) {
-            try {
+        try {
+            while (true) {
                 if (!socket.isConnected) continue
                 if (socket.isInputShutdown) continue
                 val content = source.readUtf8Line() ?: continue
                 runOnUiThread { showMessage(content) }
-            } catch (e: Exception) {
-                e.printStackTrace()
             }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
@@ -101,8 +111,29 @@ class ChatActivity : AppCompatActivity() {
         recycler.scrollToPosition(adapter.itemCount - 1)
     }
 
-    private fun sendImageMessage() {
 
+    private fun sendFileMessage(uri: Uri, image: Boolean = false) = async(UI) {
+        val file = uri.toFile()
+        val type = if (image) "image" else "file"
+        val id = rand(10000000..99999999)
+        val message = FileInfoMessage("all", "", username, now(), type,
+                file.name, file.length(), id)
+        sendMessage(gson.toJson(message))
+
+        adapter.add(ServerMessage(message.Object, message.ToUser, message.FromUser, message.CreateTime,
+                message.MsgType, message.FileName, null, true))
+        recycler.scrollToPosition(adapter.itemCount - 1)
+
+        val buffer = Okio.buffer(Okio.source(file))
+        async(CommonPool) {
+            while (!buffer.exhausted()) {
+                delay(50L)
+                val array = if (buffer.request(512)) buffer.readByteArray(512) else buffer.readByteArray()
+                val part = FileMessage(type, id, Base64.encodeToString(array, Base64.NO_WRAP))
+                sendMessage(gson.toJson(part))
+            }
+        }.await()
+        toast("发送完毕")
     }
 
     private fun sendMessage(json: String) = async(UI) {
@@ -117,11 +148,23 @@ class ChatActivity : AppCompatActivity() {
     }
 
     private fun showMessage(json: String) {
-        val message = gson.fromJson<ServerMessage>(json, ServerMessage::class.java)
-        adapter.add(message)
-        recycler.scrollToPosition(adapter.itemCount - 1)
+        val obj = JsonParser().parse(json).asJsonObject
+        when (obj["MsgType"].asString) {
+            "text" -> {
+                val message = gson.fromJson<ServerMessage>(json, ServerMessage::class.java)
 
-        updateOnlineUsers(message.OnlineUser ?: listOf())
+                adapter.add(message)
+                recycler.scrollToPosition(adapter.itemCount - 1)
+                updateOnlineUsers(message.OnlineUser ?: listOf())
+            }
+            "image", "file" -> {
+                if (obj.has("Content")) {
+                    val message = gson.fromJson<FileMessage>(json, FileMessage::class.java)
+                } else {
+                    val message = gson.fromJson<FileInfoMessage>(json, FileInfoMessage::class.java)
+                }
+            }
+        }
     }
 
     private fun updateOnlineUsers(users: List<String>) {
@@ -144,13 +187,13 @@ class ChatActivity : AppCompatActivity() {
         intent.addCategory(Intent.CATEGORY_OPENABLE)
         intent.type = if (imageOnly) "image/*" else "*/*"
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false)
-        startActivityForResult(intent, 1)
+        startActivityForResult(intent, if (imageOnly) 1 else 2)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
+        if ((requestCode == 1 || requestCode == 2) && resultCode == Activity.RESULT_OK) {
             data?.let {
-                val uri = data.data
+                sendFileMessage(data.data, image = requestCode == 1)
             }
         } else super.onActivityResult(requestCode, resultCode, data)
     }
