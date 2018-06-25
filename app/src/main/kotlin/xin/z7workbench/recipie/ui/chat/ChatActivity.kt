@@ -7,6 +7,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_chat.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
@@ -15,9 +16,11 @@ import okio.BufferedSink
 import okio.BufferedSource
 import okio.Okio
 import xin.z7workbench.recipie.R
-import xin.z7workbench.recipie.entity.ChatMessage
+import xin.z7workbench.recipie.entity.LoginMessage
+import xin.z7workbench.recipie.entity.ServerMessage
 import java.io.IOException
 import java.net.Socket
+import java.text.SimpleDateFormat
 import java.util.*
 
 class ChatActivity : AppCompatActivity() {
@@ -27,6 +30,7 @@ class ChatActivity : AppCompatActivity() {
     lateinit var socket: Socket
     lateinit var sink: BufferedSink
     lateinit var source: BufferedSource
+    lateinit var gson: Gson
 
     var username = "ZeroGo"
 
@@ -38,13 +42,15 @@ class ChatActivity : AppCompatActivity() {
         recycler.layoutManager = LinearLayoutManager(this)
         adapter = ChatMessageAdapter(this, ArrayList())
         recycler.adapter = adapter
+        gson = Gson()
 
         button_submit.setOnClickListener(View.OnClickListener {
-            val message = edit_question.text.toString()
-            if (TextUtils.isEmpty(message)) {
+            val text = edit_question.text.toString()
+            if (TextUtils.isEmpty(text)) {
                 return@OnClickListener
             }
-            sendMessage(message)
+
+            sendTextMessage(text)
             edit_question.setText("")
         })
 
@@ -62,7 +68,8 @@ class ChatActivity : AppCompatActivity() {
             }
         }.await()
         Thread(receiver).start()
-        sendMessage(username)
+
+        sendMessage(gson.toJson(LoginMessage(username)))
     }
 
     private val receiver = Runnable {
@@ -78,27 +85,40 @@ class ChatActivity : AppCompatActivity() {
         }
     }
 
-    private fun sendMessage(message: String) = async(UI) {
+    private fun sendTextMessage(text: String) {
+        val message = ServerMessage("all", "", username, now(), "text", text, null, true)
+        sendMessage(gson.toJson(message))
+
+        adapter.add(message)
+        recycler.scrollToPosition(adapter.itemCount - 1)
+    }
+
+    private fun sendImageMessage() {
+
+    }
+
+    private fun sendMessage(json: String) = async(UI) {
         async(CommonPool) {
             if (socket.isConnected) {
                 if (!socket.isOutputShutdown) {
-                    sink.writeUtf8("$username:$message\n")
+                    sink.writeUtf8("$json\n")
                     sink.flush()
                 }
             }
         }.await()
-
-        val chatMessage = ChatMessage(message, true, false)
-        adapter.add(chatMessage)
-
-        recycler.scrollToPosition(adapter.itemCount - 1)
     }
 
-    private fun showMessage(message: String) {
-        val chatMessage = ChatMessage(message, false, false)
-        adapter.add(chatMessage)
-
+    private fun showMessage(json: String) {
+        val message = gson.fromJson<ServerMessage>(json, ServerMessage::class.java)
+        adapter.add(message)
         recycler.scrollToPosition(adapter.itemCount - 1)
+
+        online_users.text = "OnlineUsers:${message.OnlineUser?.joinToString()}"
+    }
+
+    private fun now(): String {
+        val sdf = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
+        return sdf.format(Date())
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
