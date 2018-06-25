@@ -44,7 +44,7 @@ class ChatMessageAdapter(private val context: Context, private val messages: Mut
         holder.username.text = message.FromUser
         when (message.MsgType) {
             "image", "file" -> {
-                val fileSize = Formatter.formatFileSize(holder.image.context, composite.file!!.size * 1024L)
+                val fileSize = Formatter.formatFileSize(holder.image.context, composite.file!!.size.toLong())
                 if (!composite.file.finished) {
                     holder.image.visibility = View.GONE
                     val progress = (composite.file.processed.toDouble() / composite.file.size * 100).toInt()
