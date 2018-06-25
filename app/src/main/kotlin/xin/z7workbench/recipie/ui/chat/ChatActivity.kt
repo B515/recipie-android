@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.chip.Chip
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import kotlinx.android.synthetic.main.activity_chat.*
 import kotlinx.coroutines.experimental.CommonPool
@@ -81,11 +82,13 @@ class ChatActivity : AppCompatActivity() {
     private fun connect() = async(UI) {
         async(CommonPool) {
             try {
-                socket = Socket("123.206.13.211", 8964)
+                val host = listOf("123.206.13.211", "192.168.1.105")[0]
+                socket = Socket(host, 8964)
                 sink = Okio.buffer(Okio.sink(socket))
                 source = Okio.buffer(Okio.source(socket))
             } catch (e: IOException) {
                 e.printStackTrace()
+                toast("Socket 连接失败")
             }
         }.await()
         Thread(receiver).start()
@@ -103,6 +106,7 @@ class ChatActivity : AppCompatActivity() {
             }
         } catch (e: Exception) {
             e.printStackTrace()
+            toast("Socket 关闭")
         }
     }
 
@@ -134,8 +138,7 @@ class ChatActivity : AppCompatActivity() {
         var sent = 0
         while (!buffer.exhausted()) {
             async(CommonPool) {
-                delay(50L)
-                val array = if (buffer.request(512)) buffer.readByteArray(512) else buffer.readByteArray()
+                val array = if (buffer.request(8192)) buffer.readByteArray(8192) else buffer.readByteArray()
                 val part = FileMessage(type, id, Base64.encodeToString(array, Base64.NO_WRAP))
                 sendMessage(gson.toJson(part))
                 sent += array.size
@@ -157,7 +160,13 @@ class ChatActivity : AppCompatActivity() {
     }
 
     private fun processMessage(json: String) {
-        val obj = JsonParser().parse(json).asJsonObject
+        val obj: JsonObject
+        try {
+            obj = JsonParser().parse(json).asJsonObject
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return
+        }
         when (obj["MsgType"].asString) {
             "text" -> {
                 val message = gson.fromJson<ServerMessage>(json, ServerMessage::class.java)
