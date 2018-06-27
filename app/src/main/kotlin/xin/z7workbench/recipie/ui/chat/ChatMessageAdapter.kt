@@ -30,7 +30,7 @@ class ChatMessageAdapter(private val context: Context, private val messages: Mut
         }) {
     override fun getItemCount(): Int = messages.size
 
-    override fun getItemViewType(position: Int): Int = if (messages[position].message.fromMyself) REQUEST else RESPONSE
+    override fun getItemViewType(position: Int): Int = if (messages[position].fromMyself) REQUEST else RESPONSE
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageHolder =
             MessageHolder(LayoutInflater.from(context).inflate(
@@ -50,7 +50,7 @@ class ChatMessageAdapter(private val context: Context, private val messages: Mut
                     val progress = (composite.file.processed.toDouble() / composite.file.size * 100).toInt()
                     holder.message.text = "${message.Content}, $fileSize\n$progress%"
                 } else {
-                    val path = if (message.fromMyself) composite.file.localPath!!
+                    val path = if (composite.fromMyself) composite.file.localPath!!
                     else getAbsolutePath(composite.file.id, message.Content)
                     holder.messageView.setOnClickListener {
                         context.startActivity(openFile(path))
@@ -77,14 +77,14 @@ class ChatMessageAdapter(private val context: Context, private val messages: Mut
         holder.time.text = message.CreateTime
     }
 
-    fun add(message: ServerMessage) {
-        messages.add(MessageComposite(message, null))
+    fun add(message: ServerMessage, fromMyself: Boolean) {
+        messages.add(MessageComposite(message, null, fromMyself))
         submitList(messages)
     }
 
     fun add(message: FileInfoMessage, fromMyself: Boolean, localPath: String?) {
         messages.add(MessageComposite(ServerMessage(message.Object, message.ToUser, message.FromUser, message.CreateTime,
-                message.MsgType, message.FileName, null, fromMyself), FileInfo(localPath, message.MsgID, message.FileSize, 0)))
+                message.MsgType, message.FileName, null), FileInfo(localPath, message.MsgID, message.FileSize, 0), fromMyself))
         submitList(messages)
     }
 
@@ -103,7 +103,7 @@ class ChatMessageAdapter(private val context: Context, private val messages: Mut
         val messageView: ChatMessageView = itemView.findViewById(R.id.message_view)
     }
 
-    data class MessageComposite(val message: ServerMessage, val file: FileInfo?)
+    data class MessageComposite(val message: ServerMessage, val file: FileInfo?, val fromMyself: Boolean)
     data class FileInfo(val localPath: String?, val id: Int, val size: Int, var processed: Int) {
         val finished
             get() = size == processed

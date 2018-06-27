@@ -111,10 +111,10 @@ class ChatActivity : AppCompatActivity() {
     }
 
     private fun sendTextMessage(text: String) {
-        val message = ServerMessage("all", "", username, now(), "text", text, null, true)
+        val message = ServerMessage("all", "", username, now(), "text", text, null)
         sendMessage(gson.toJson(message))
 
-        adapter.add(message)
+        adapter.add(message, true)
         recycler.scrollToPosition(adapter.itemCount - 1)
     }
 
@@ -171,7 +171,7 @@ class ChatActivity : AppCompatActivity() {
             "text" -> {
                 val message = gson.fromJson<ServerMessage>(json, ServerMessage::class.java)
 
-                adapter.add(message)
+                adapter.add(message, false)
                 recycler.scrollToPosition(adapter.itemCount - 1)
                 updateOnlineUsers(message.OnlineUser ?: listOf())
             }
