@@ -17,9 +17,13 @@ data class SystemAuthRequestMessage(val Op: String, val Username: String, val Pa
 
 data class SystemAuthResultMessage(val Result: Boolean)
 
-data class SystemRequestMessage(val MsgType: String, val Op: String)
+data class SystemMessage(val MsgType: String, val Op: String, val Result: Boolean = false)
 
-data class SystemResultMessage(val MsgType: String, val Op: String, val Result: Boolean)
+data class SystemProfileMessage(val MsgType: String, val Op: String, var Nickname: String,
+                                var Sex: Int, val Result: Boolean = false)
 
-data class SystemProfileMessage(val MsgType: String, val Op: String, val Result: Boolean,
-                                var Nickname: String, var Sex: Int)
+data class SystemFollowMessage(val MsgType: String, val Op: String, val User: String,
+                               val Result: Boolean = false)
+
+data class SystemFollowingMessage(val MsgType: String, val Op: String, val UserList: List<String>,
+                                  val Result: Boolean = false)

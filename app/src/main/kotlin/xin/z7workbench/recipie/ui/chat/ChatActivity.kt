@@ -192,7 +192,7 @@ class ChatActivity : AppCompatActivity() {
                         val message = gson.fromJson<SystemProfileMessage>(json)
                     }
                     "update_inf" -> {
-                        val message = gson.fromJson<SystemResultMessage>(json)
+                        val message = gson.fromJson<SystemMessage>(json)
                     }
                 }
             }
