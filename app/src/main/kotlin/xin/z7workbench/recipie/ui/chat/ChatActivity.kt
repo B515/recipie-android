@@ -91,7 +91,7 @@ class ChatActivity : AppCompatActivity() {
         }.await()
         Thread(receiver).start()
 
-        sendMessage(gson.toJson(LoginMessage(username)))
+        sendMessage(LoginMessage(username))
     }
 
     private val receiver = Runnable {
@@ -108,9 +108,14 @@ class ChatActivity : AppCompatActivity() {
         }
     }
 
+    private fun login(username: String, password: String) = sendMessage(AuthRequestMessage("login", username, password, ""))
+
+    private fun register(username: String, password: String, nickname: String) =
+            sendMessage(AuthRequestMessage("register", username, password, nickname))
+
     private fun sendTextMessage(text: String) {
         val message = ServerMessage("all", "", username, now(), "text", text, null)
-        sendMessage(gson.toJson(message))
+        sendMessage(message)
 
         adapter.add(message, true)
         recycler.scrollToPosition(adapter.itemCount - 1)
@@ -127,7 +132,7 @@ class ChatActivity : AppCompatActivity() {
         val id = rand(10000000..99999999)
         val message = FileInfoMessage("all", "", username, now(), type,
                 file.name, file.length().toInt(), id)
-        sendMessage(gson.toJson(message))
+        sendMessage(message)
 
         adapter.add(message, true, file.absolutePath)
         recycler.scrollToPosition(adapter.itemCount - 1)
@@ -138,7 +143,7 @@ class ChatActivity : AppCompatActivity() {
             async(CommonPool) {
                 val array = if (buffer.request(8192)) buffer.readByteArray(8192) else buffer.readByteArray()
                 val part = FileMessage(type, id, Base64.encodeToString(array, Base64.NO_WRAP))
-                sendMessage(gson.toJson(part))
+                sendMessage(part)
                 sent += array.size
             }.await()
             adapter.updateFileProgress(id, sent)
@@ -146,11 +151,19 @@ class ChatActivity : AppCompatActivity() {
         toast("发送完毕")
     }
 
-    private fun sendMessage(json: String) = async(UI) {
+    private fun viewInfo() = sendMessage(SystemMessage("view_inf"))
+    private fun updateInfo(nickname: String, sex: Int) = sendMessage(SystemProfileMessage("update_inf", nickname, sex))
+    private fun followUser(username: String) = sendMessage(SystemFollowMessage("follow", username))
+    private fun unfollowUser(username: String) = sendMessage(SystemFollowMessage("unfollow", username))
+    private fun following() = sendMessage(SystemMessage("following"))
+    private fun follower() = sendMessage(SystemMessage("follower"))
+
+
+    private fun sendMessage(obj: Any) = async(UI) {
         async(CommonPool) {
             if (socket.isConnected) {
                 if (!socket.isOutputShutdown) {
-                    sink.writeUtf8("$json\n")
+                    sink.writeUtf8("${gson.toJson(obj)}\n")
                     sink.flush()
                 }
             }
@@ -164,6 +177,9 @@ class ChatActivity : AppCompatActivity() {
         } catch (e: Exception) {
             e.printStackTrace()
             return
+        }
+        if (!obj.has("MsgType")) {
+            val message = gson.fromJson<AuthResultMessage>(json)
         }
         when (obj["MsgType"].asString) {
             "text" -> {
@@ -193,6 +209,12 @@ class ChatActivity : AppCompatActivity() {
                     }
                     "update_inf" -> {
                         val message = gson.fromJson<SystemMessage>(json)
+                    }
+                    "follow", "unfollow" -> {
+                        val message = gson.fromJson<SystemFollowMessage>(json)
+                    }
+                    "following", "follower" -> {
+                        val message = gson.fromJson<SystemFollowingMessage>(json)
                     }
                 }
             }

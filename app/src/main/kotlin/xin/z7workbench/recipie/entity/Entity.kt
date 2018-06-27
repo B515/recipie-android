@@ -12,18 +12,18 @@ data class FileInfoMessage(val Object: String, val ToUser: String, val FromUser:
 
 data class FileMessage(val MsgType: String, val MsgID: Int, val Content: String)
 
-data class SystemAuthRequestMessage(val Op: String, val Username: String, val Password: String,
-                                    val Nickname: String)
+data class AuthRequestMessage(val Op: String, val Username: String, val Password: String,
+                              val Nickname: String)
 
-data class SystemAuthResultMessage(val Result: Boolean)
+data class AuthResultMessage(val Result: Boolean)
 
-data class SystemMessage(val MsgType: String, val Op: String, val Result: Boolean = false)
+data class SystemMessage(val Op: String, val MsgType: String = "system", val Result: Boolean = false)
 
-data class SystemProfileMessage(val MsgType: String, val Op: String, var Nickname: String,
-                                var Sex: Int, val Result: Boolean = false)
+data class SystemProfileMessage(val Op: String, var Nickname: String, var Sex: Int,
+                                val MsgType: String = "system", val Result: Boolean = false)
 
-data class SystemFollowMessage(val MsgType: String, val Op: String, val User: String,
+data class SystemFollowMessage(val Op: String, val User: String, val MsgType: String = "system",
                                val Result: Boolean = false)
 
-data class SystemFollowingMessage(val MsgType: String, val Op: String, val UserList: List<String>,
+data class SystemFollowingMessage(val Op: String, val UserList: List<String>, val MsgType: String = "system",
                                   val Result: Boolean = false)
