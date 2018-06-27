@@ -12,8 +12,8 @@ data class FileInfoMessage(val Object: String, val ToUser: String, val FromUser:
 
 data class FileMessage(val MsgType: String, val MsgID: Int, val Content: String)
 
-data class SystemAuthRequestMessage(val MsgType: String, val Op: String, val Result: Boolean,
-                             val Username: String, val Password: String, val Nickname: String)
+data class SystemAuthRequestMessage(val Op: String, val Username: String, val Password: String,
+                                    val Nickname: String)
 
 data class SystemAuthResultMessage(val Result: Boolean)
 

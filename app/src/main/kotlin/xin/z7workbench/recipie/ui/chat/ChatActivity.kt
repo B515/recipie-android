@@ -26,10 +26,7 @@ import okio.BufferedSink
 import okio.BufferedSource
 import okio.Okio
 import xin.z7workbench.recipie.R
-import xin.z7workbench.recipie.entity.FileInfoMessage
-import xin.z7workbench.recipie.entity.FileMessage
-import xin.z7workbench.recipie.entity.LoginMessage
-import xin.z7workbench.recipie.entity.ServerMessage
+import xin.z7workbench.recipie.entity.*
 import xin.z7workbench.recipie.util.getAbsolutePath
 import xin.z7workbench.recipie.util.rand
 import java.io.File
@@ -46,6 +43,7 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var sink: BufferedSink
     lateinit var source: BufferedSource
     private lateinit var gson: Gson
+    inline fun <reified T> Gson.fromJson(json: String): T = this.fromJson<T>(json, T::class.java)
     private val receivingFilesParts: MutableMap<Int, MutableList<FileMessage>> = mutableMapOf()
 
     var username = "ZeroGo"
@@ -169,7 +167,7 @@ class ChatActivity : AppCompatActivity() {
         }
         when (obj["MsgType"].asString) {
             "text" -> {
-                val message = gson.fromJson<ServerMessage>(json, ServerMessage::class.java)
+                val message = gson.fromJson<ServerMessage>(json)
 
                 adapter.add(message, false)
                 recycler.scrollToPosition(adapter.itemCount - 1)
@@ -177,15 +175,25 @@ class ChatActivity : AppCompatActivity() {
             }
             "image", "file" -> {
                 if (obj.has("Content")) {
-                    val message = gson.fromJson<FileMessage>(json, FileMessage::class.java)
+                    val message = gson.fromJson<FileMessage>(json)
                     receivingFilesParts[message.MsgID]!!.add(message)
                 } else {
-                    val message = gson.fromJson<FileInfoMessage>(json, FileInfoMessage::class.java)
+                    val message = gson.fromJson<FileInfoMessage>(json)
                     receivingFilesParts[message.MsgID] = mutableListOf()
                     processFile(message)
 
                     adapter.add(message, false, null)
                     recycler.scrollToPosition(adapter.itemCount - 1)
+                }
+            }
+            "system" -> {
+                when (obj["Op"].asString) {
+                    "view_inf" -> {
+                        val message = gson.fromJson<SystemProfileMessage>(json)
+                    }
+                    "update_inf" -> {
+                        val message = gson.fromJson<SystemResultMessage>(json)
+                    }
                 }
             }
         }
