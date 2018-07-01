@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.chip.Chip
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import kotlinx.android.synthetic.main.activity_chat.*
 import kotlinx.coroutines.experimental.CommonPool
@@ -25,10 +26,7 @@ import okio.BufferedSink
 import okio.BufferedSource
 import okio.Okio
 import xin.z7workbench.recipie.R
-import xin.z7workbench.recipie.entity.FileInfoMessage
-import xin.z7workbench.recipie.entity.FileMessage
-import xin.z7workbench.recipie.entity.LoginMessage
-import xin.z7workbench.recipie.entity.ServerMessage
+import xin.z7workbench.recipie.entity.*
 import xin.z7workbench.recipie.util.getAbsolutePath
 import xin.z7workbench.recipie.util.rand
 import java.io.File
@@ -45,6 +43,7 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var sink: BufferedSink
     lateinit var source: BufferedSource
     private lateinit var gson: Gson
+    inline fun <reified T> Gson.fromJson(json: String): T = this.fromJson<T>(json, T::class.java)
     private val receivingFilesParts: MutableMap<Int, MutableList<FileMessage>> = mutableMapOf()
 
     var username = "ZeroGo"
@@ -81,16 +80,18 @@ class ChatActivity : AppCompatActivity() {
     private fun connect() = async(UI) {
         async(CommonPool) {
             try {
-                socket = Socket("123.206.13.211", 8964)
+                val host = listOf("123.206.13.211", "192.168.1.105")[0]
+                socket = Socket(host, 8964)
                 sink = Okio.buffer(Okio.sink(socket))
                 source = Okio.buffer(Okio.source(socket))
             } catch (e: IOException) {
                 e.printStackTrace()
+                toast("Socket 连接失败")
             }
         }.await()
         Thread(receiver).start()
 
-        sendMessage(gson.toJson(LoginMessage(username)))
+        sendMessage(LoginMessage(username))
     }
 
     private val receiver = Runnable {
@@ -103,14 +104,20 @@ class ChatActivity : AppCompatActivity() {
             }
         } catch (e: Exception) {
             e.printStackTrace()
+            toast("Socket 关闭")
         }
     }
 
-    private fun sendTextMessage(text: String) {
-        val message = ServerMessage("all", "", username, now(), "text", text, null, true)
-        sendMessage(gson.toJson(message))
+    private fun login(username: String, password: String) = sendMessage(AuthRequestMessage("login", username, password, ""))
 
-        adapter.add(message)
+    private fun register(username: String, password: String, nickname: String) =
+            sendMessage(AuthRequestMessage("register", username, password, nickname))
+
+    private fun sendTextMessage(text: String) {
+        val message = ServerMessage("all", "", username, now(), "text", text, null)
+        sendMessage(message)
+
+        adapter.add(message, true)
         recycler.scrollToPosition(adapter.itemCount - 1)
     }
 
@@ -125,7 +132,7 @@ class ChatActivity : AppCompatActivity() {
         val id = rand(10000000..99999999)
         val message = FileInfoMessage("all", "", username, now(), type,
                 file.name, file.length().toInt(), id)
-        sendMessage(gson.toJson(message))
+        sendMessage(message)
 
         adapter.add(message, true, file.absolutePath)
         recycler.scrollToPosition(adapter.itemCount - 1)
@@ -134,10 +141,9 @@ class ChatActivity : AppCompatActivity() {
         var sent = 0
         while (!buffer.exhausted()) {
             async(CommonPool) {
-                delay(50L)
-                val array = if (buffer.request(512)) buffer.readByteArray(512) else buffer.readByteArray()
+                val array = if (buffer.request(8192)) buffer.readByteArray(8192) else buffer.readByteArray()
                 val part = FileMessage(type, id, Base64.encodeToString(array, Base64.NO_WRAP))
-                sendMessage(gson.toJson(part))
+                sendMessage(part)
                 sent += array.size
             }.await()
             adapter.updateFileProgress(id, sent)
@@ -145,11 +151,19 @@ class ChatActivity : AppCompatActivity() {
         toast("发送完毕")
     }
 
-    private fun sendMessage(json: String) = async(UI) {
+    private fun viewInfo() = sendMessage(SystemMessage("view_inf"))
+    private fun updateInfo(nickname: String, sex: Int) = sendMessage(SystemProfileMessage("update_inf", nickname, sex))
+    private fun followUser(username: String) = sendMessage(SystemFollowMessage("follow", username))
+    private fun unfollowUser(username: String) = sendMessage(SystemFollowMessage("unfollow", username))
+    private fun following() = sendMessage(SystemMessage("following"))
+    private fun follower() = sendMessage(SystemMessage("follower"))
+
+
+    private fun sendMessage(obj: Any) = async(UI) {
         async(CommonPool) {
             if (socket.isConnected) {
                 if (!socket.isOutputShutdown) {
-                    sink.writeUtf8("$json\n")
+                    sink.writeUtf8("${gson.toJson(obj)}\n")
                     sink.flush()
                 }
             }
@@ -157,26 +171,51 @@ class ChatActivity : AppCompatActivity() {
     }
 
     private fun processMessage(json: String) {
-        val obj = JsonParser().parse(json).asJsonObject
+        val obj: JsonObject
+        try {
+            obj = JsonParser().parse(json).asJsonObject
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return
+        }
+        if (!obj.has("MsgType")) {
+            val message = gson.fromJson<AuthResultMessage>(json)
+        }
         when (obj["MsgType"].asString) {
             "text" -> {
-                val message = gson.fromJson<ServerMessage>(json, ServerMessage::class.java)
+                val message = gson.fromJson<ServerMessage>(json)
 
-                adapter.add(message)
+                adapter.add(message, false)
                 recycler.scrollToPosition(adapter.itemCount - 1)
                 updateOnlineUsers(message.OnlineUser ?: listOf())
             }
             "image", "file" -> {
                 if (obj.has("Content")) {
-                    val message = gson.fromJson<FileMessage>(json, FileMessage::class.java)
+                    val message = gson.fromJson<FileMessage>(json)
                     receivingFilesParts[message.MsgID]!!.add(message)
                 } else {
-                    val message = gson.fromJson<FileInfoMessage>(json, FileInfoMessage::class.java)
+                    val message = gson.fromJson<FileInfoMessage>(json)
                     receivingFilesParts[message.MsgID] = mutableListOf()
                     processFile(message)
 
                     adapter.add(message, false, null)
                     recycler.scrollToPosition(adapter.itemCount - 1)
+                }
+            }
+            "system" -> {
+                when (obj["Op"].asString) {
+                    "view_inf" -> {
+                        val message = gson.fromJson<SystemProfileMessage>(json)
+                    }
+                    "update_inf" -> {
+                        val message = gson.fromJson<SystemMessage>(json)
+                    }
+                    "follow", "unfollow" -> {
+                        val message = gson.fromJson<SystemFollowMessage>(json)
+                    }
+                    "following", "follower" -> {
+                        val message = gson.fromJson<SystemFollowingMessage>(json)
+                    }
                 }
             }
         }
