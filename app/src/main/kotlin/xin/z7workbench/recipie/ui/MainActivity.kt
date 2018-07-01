@@ -1,4 +1,4 @@
-package xin.z7workbench.recipie.ui.chat
+package xin.z7workbench.recipie.ui
 
 import android.os.Bundle
 import android.view.Menu
@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.startActivity
 import xin.z7workbench.recipie.R
+import xin.z7workbench.recipie.ui.chat.ChatActivity
 
 class MainActivity : AppCompatActivity() {
 
