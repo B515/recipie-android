@@ -1,6 +1,7 @@
 package xin.z7workbench.recipie.ui.chat
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -9,6 +10,7 @@ import android.util.Base64
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.EditText
 import androidx.core.net.toFile
 import androidx.core.widget.toast
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -64,6 +66,7 @@ class ChatActivity : SocketActivity() {
             unfollow.visibility = View.GONE
             following.setOnClickListener { following() }
             follower.setOnClickListener { follower() }
+            profile.setOnClickListener { viewInfo() }
         }
         setSupportActionBar(toolbar)
 
@@ -177,10 +180,39 @@ class ChatActivity : SocketActivity() {
             "system" -> {
                 when (obj["Op"].asString) {
                     "view_inf" -> {
-                        val message = gson.fromJson<SystemProfileMessage>(json)
+                        val m = gson.fromJson<SystemProfileMessage>(json)
+                        alert {
+                            title = "个人资料"
+                            message = "性别： ${if (m.Sex == 0) "女" else "男"}\n昵称： ${m.Nickname}"
+                            positiveButton("确定") {}
+                            negativeButton("编辑") {
+                                var sex = 0
+                                var nick = ""
+                                val b1 = AlertDialog.Builder(this@ChatActivity)
+                                b1.setTitle("性别：")
+                                b1.setSingleChoiceItems(arrayOf("女", "男"), sex) { _, which -> sex = which }
+                                b1.setPositiveButton("确定") { dialog, _ ->
+                                    dialog.dismiss()
+                                    val b2 = AlertDialog.Builder(this@ChatActivity)
+                                    val edittext = EditText(this@ChatActivity)
+                                    b2.setMessage("昵称：")
+                                    b2.setView(edittext)
+                                    b2.setPositiveButton("确定") { _, _ ->
+                                        nick = edittext.text.toString()
+                                        updateInfo(nick, sex)
+                                    }
+                                    b2.create().show()
+                                }
+                                b1.create().show()
+                            }
+                        }.show()
                     }
                     "update_inf" -> {
-                        val message = gson.fromJson<SystemMessage>(json)
+                        val m = gson.fromJson<SystemMessage>(json)
+                        alert {
+                            title = "个人资料修改" + if (m.Result) "成功" else "失败"
+                            message = ""
+                        }.show()
                     }
                     "follow", "unfollow" -> {
                         val message = gson.fromJson<SystemFollowMessage>(json)
