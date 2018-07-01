@@ -8,13 +8,10 @@ import android.text.TextUtils
 import android.util.Base64
 import android.view.Menu
 import android.view.MenuItem
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toFile
 import androidx.core.widget.toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.chip.Chip
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import kotlinx.android.synthetic.main.activity_chat.*
@@ -22,31 +19,24 @@ import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.delay
-import okio.BufferedSink
-import okio.BufferedSource
 import okio.Okio
+import org.jetbrains.anko.defaultSharedPreferences
 import xin.z7workbench.recipie.R
 import xin.z7workbench.recipie.entity.*
+import xin.z7workbench.recipie.ui.SocketActivity
 import xin.z7workbench.recipie.util.getAbsolutePath
 import xin.z7workbench.recipie.util.rand
 import java.io.File
-import java.io.IOException
-import java.net.Socket
 import java.text.SimpleDateFormat
 import java.util.*
 
-class ChatActivity : AppCompatActivity() {
+class ChatActivity : SocketActivity() {
 
     private lateinit var adapter: ChatMessageAdapter
 
-    private lateinit var socket: Socket
-    private lateinit var sink: BufferedSink
-    lateinit var source: BufferedSource
-    private lateinit var gson: Gson
-    inline fun <reified T> Gson.fromJson(json: String): T = this.fromJson<T>(json, T::class.java)
     private val receivingFilesParts: MutableMap<Int, MutableList<FileMessage>> = mutableMapOf()
-
-    var username = "ZeroGo"
+    private val user: String by lazy { defaultSharedPreferences.getString("username", "") }
+    private val pwd: String by lazy { defaultSharedPreferences.getString("password", "") }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,7 +46,6 @@ class ChatActivity : AppCompatActivity() {
         recycler.layoutManager = LinearLayoutManager(this)
         adapter = ChatMessageAdapter(this, ArrayList())
         recycler.adapter = adapter
-        gson = GsonBuilder().disableHtmlEscaping().create()
 
         button_submit.setOnClickListener {
             val text = edit_question.text.toString()
@@ -75,46 +64,16 @@ class ChatActivity : AppCompatActivity() {
         }
 
         connect()
+        login()
     }
 
-    private fun connect() = async(UI) {
-        async(CommonPool) {
-            try {
-                val host = listOf("123.206.13.211", "192.168.1.105")[0]
-                socket = Socket(host, 8964)
-                sink = Okio.buffer(Okio.sink(socket))
-                source = Okio.buffer(Okio.source(socket))
-            } catch (e: IOException) {
-                e.printStackTrace()
-                toast("Socket 连接失败")
-            }
-        }.await()
-        Thread(receiver).start()
-
-        sendMessage(LoginMessage(username))
+    private fun login() = async(UI) {
+        delay(1)
+        sendMessage(AuthRequestMessage("login", user, pwd, ""))
     }
-
-    private val receiver = Runnable {
-        try {
-            while (true) {
-                if (!socket.isConnected) continue
-                if (socket.isInputShutdown) continue
-                val content = source.readUtf8Line() ?: continue
-                runOnUiThread { processMessage(content) }
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            toast("Socket 关闭")
-        }
-    }
-
-    private fun login(username: String, password: String) = sendMessage(AuthRequestMessage("login", username, password, ""))
-
-    private fun register(username: String, password: String, nickname: String) =
-            sendMessage(AuthRequestMessage("register", username, password, nickname))
 
     private fun sendTextMessage(text: String) {
-        val message = ServerMessage("all", "", username, now(), "text", text, null)
+        val message = ServerMessage("all", "", user, now(), "text", text, null)
         sendMessage(message)
 
         adapter.add(message, true)
@@ -130,7 +89,7 @@ class ChatActivity : AppCompatActivity() {
         }
         val type = if (image) "image" else "file"
         val id = rand(10000000..99999999)
-        val message = FileInfoMessage("all", "", username, now(), type,
+        val message = FileInfoMessage("all", "", user, now(), type,
                 file.name, file.length().toInt(), id)
         sendMessage(message)
 
@@ -158,19 +117,7 @@ class ChatActivity : AppCompatActivity() {
     private fun following() = sendMessage(SystemMessage("following"))
     private fun follower() = sendMessage(SystemMessage("follower"))
 
-
-    private fun sendMessage(obj: Any) = async(UI) {
-        async(CommonPool) {
-            if (socket.isConnected) {
-                if (!socket.isOutputShutdown) {
-                    sink.writeUtf8("${gson.toJson(obj)}\n")
-                    sink.flush()
-                }
-            }
-        }.await()
-    }
-
-    private fun processMessage(json: String) {
+    override fun processMessage(json: String) {
         val obj: JsonObject
         try {
             obj = JsonParser().parse(json).asJsonObject
@@ -180,6 +127,7 @@ class ChatActivity : AppCompatActivity() {
         }
         if (!obj.has("MsgType")) {
             val message = gson.fromJson<AuthResultMessage>(json)
+            return
         }
         when (obj["MsgType"].asString) {
             "text" -> {
@@ -294,8 +242,5 @@ class ChatActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onBackPressed() {
-        socket.close()
-        super.onBackPressed()
-    }
+
 }
