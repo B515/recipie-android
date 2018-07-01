@@ -7,6 +7,7 @@ import com.google.gson.JsonParser
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.layout_login.*
 import kotlinx.android.synthetic.main.layout_register.*
+import org.jetbrains.anko.defaultSharedPreferences
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
 import xin.z7workbench.recipie.R
@@ -21,6 +22,10 @@ class LoginActivity : SocketActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         login.setOnClickListener {
+            defaultSharedPreferences.edit()
+                    .putString("username", username.text.toString())
+                    .putString("password", password.text.toString())
+                    .apply()
             login(username.text.toString(), password.text.toString())
         }
         register.setOnClickListener {
@@ -32,6 +37,10 @@ class LoginActivity : SocketActivity() {
             back()
         }
         do_register.setOnClickListener {
+            defaultSharedPreferences.edit()
+                    .putString("username", username1.text.toString())
+                    .putString("password", password1.text.toString())
+                    .apply()
             register(username1.text.toString(), password1.text.toString(), "nickname")
         }
         connect()

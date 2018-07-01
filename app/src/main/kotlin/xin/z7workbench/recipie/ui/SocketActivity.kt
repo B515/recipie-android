@@ -20,8 +20,6 @@ abstract class SocketActivity : AppCompatActivity() {
     val gson: Gson = GsonBuilder().disableHtmlEscaping().create()
     inline fun <reified T> Gson.fromJson(json: String): T = this.fromJson<T>(json, T::class.java)
 
-    open var USER = "zerogo"
-
     fun connect() = async(UI) {
         async {
             try {
@@ -29,6 +27,7 @@ abstract class SocketActivity : AppCompatActivity() {
                 socket = Socket(host, 8964)
                 sink = Okio.buffer(Okio.sink(socket))
                 source = Okio.buffer(Okio.source(socket))
+                runOnUiThread { toast("Socket 已连接") }
             } catch (e: IOException) {
                 e.printStackTrace()
                 runOnUiThread { toast("Socket 连接失败") }

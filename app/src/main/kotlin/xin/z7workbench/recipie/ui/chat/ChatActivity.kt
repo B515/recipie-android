@@ -20,6 +20,7 @@ import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.delay
 import okio.Okio
+import org.jetbrains.anko.defaultSharedPreferences
 import xin.z7workbench.recipie.R
 import xin.z7workbench.recipie.entity.*
 import xin.z7workbench.recipie.ui.SocketActivity
@@ -34,8 +35,8 @@ class ChatActivity : SocketActivity() {
     private lateinit var adapter: ChatMessageAdapter
 
     private val receivingFilesParts: MutableMap<Int, MutableList<FileMessage>> = mutableMapOf()
-
-    override var USER = "ZeroGo"
+    private val user: String by lazy { defaultSharedPreferences.getString("username", "") }
+    private val pwd: String by lazy { defaultSharedPreferences.getString("password", "") }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,10 +64,16 @@ class ChatActivity : SocketActivity() {
         }
 
         connect()
+        login()
+    }
+
+    private fun login() = async(UI) {
+        delay(1)
+        sendMessage(AuthRequestMessage("login", user, pwd, ""))
     }
 
     private fun sendTextMessage(text: String) {
-        val message = ServerMessage("all", "", USER, now(), "text", text, null)
+        val message = ServerMessage("all", "", user, now(), "text", text, null)
         sendMessage(message)
 
         adapter.add(message, true)
@@ -82,7 +89,7 @@ class ChatActivity : SocketActivity() {
         }
         val type = if (image) "image" else "file"
         val id = rand(10000000..99999999)
-        val message = FileInfoMessage("all", "", USER, now(), type,
+        val message = FileInfoMessage("all", "", user, now(), type,
                 file.name, file.length().toInt(), id)
         sendMessage(message)
 
@@ -120,6 +127,7 @@ class ChatActivity : SocketActivity() {
         }
         if (!obj.has("MsgType")) {
             val message = gson.fromJson<AuthResultMessage>(json)
+            return
         }
         when (obj["MsgType"].asString) {
             "text" -> {
