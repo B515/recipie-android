@@ -103,7 +103,7 @@
         app:srcCompat="@drawable/ic_return" />
 
     <Button
-        android:id="@+id/register"
+        android:id="@+id/do_register"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
