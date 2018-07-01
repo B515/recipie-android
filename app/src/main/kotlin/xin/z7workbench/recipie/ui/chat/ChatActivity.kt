@@ -53,6 +53,11 @@ class ChatActivity : SocketActivity() {
             online_users.visibility = View.INVISIBLE
             online_users_text.visibility = View.INVISIBLE
             toolbar.title = toUser
+            follow.setOnClickListener { followUser(toUser) }
+            unfollow.setOnClickListener { unfollowUser(toUser) }
+        } else {
+            follow.visibility = View.INVISIBLE
+            unfollow.visibility = View.INVISIBLE
         }
         setSupportActionBar(toolbar)
 
@@ -173,6 +178,7 @@ class ChatActivity : SocketActivity() {
                     }
                     "follow", "unfollow" -> {
                         val message = gson.fromJson<SystemFollowMessage>(json)
+                        toast("已" + (if (message.Op == "follow") "关注" else "取关") + message.User)
                     }
                     "following", "follower" -> {
                         val message = gson.fromJson<SystemFollowingMessage>(json)
