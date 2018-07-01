@@ -7,6 +7,7 @@
     <color name="colorBackground">#e1f5fe</color>
     <color name="colorButton">#42a5f5</color>
     <color name="colorButtonFocus">#90caf9</color>
+    <color name="colorDisable">#888888</color>
 
     <color name="foreground">#afffffff</color>
 </resources>

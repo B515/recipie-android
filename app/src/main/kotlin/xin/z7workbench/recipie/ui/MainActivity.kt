@@ -3,6 +3,7 @@ package xin.z7workbench.recipie.ui
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.startActivity
@@ -16,6 +17,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 //        startActivity<ChatActivity>()
         setSupportActionBar(bar)
+
+        left_drawer.adapter = ArrayAdapter<String>(this,
+                R.layout.drawer_item, R.id.tv, arrayOf("用户信息", "收藏", "关注"))
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
