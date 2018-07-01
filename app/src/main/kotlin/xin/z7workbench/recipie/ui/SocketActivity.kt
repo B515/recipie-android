@@ -9,7 +9,6 @@ import kotlinx.coroutines.experimental.async
 import okio.BufferedSink
 import okio.BufferedSource
 import okio.Okio
-import xin.z7workbench.recipie.entity.LoginMessage
 import java.io.IOException
 import java.net.Socket
 
@@ -36,8 +35,6 @@ abstract class SocketActivity : AppCompatActivity() {
             }
         }.await()
         Thread(receiver).start()
-
-        sendMessage(LoginMessage(USER))
     }
 
     val receiver = Runnable {
