@@ -26,6 +26,30 @@
                 android:layout_gravity="end">
 
                 <Button
+                    android:id="@+id/profile"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="80dp"
+                    android:layout_height="match_parent"
+                    android:text="个人资料"
+                    android:textColor="?attr/colorAccent" />
+
+                <Button
+                    android:id="@+id/following"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="70dp"
+                    android:layout_height="match_parent"
+                    android:text="关注中"
+                    android:textColor="?attr/colorAccent" />
+
+                <Button
+                    android:id="@+id/follower"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="70dp"
+                    android:layout_height="match_parent"
+                    android:text="关注者"
+                    android:textColor="?attr/colorAccent" />
+
+                <Button
                     android:id="@+id/follow"
                     style="@style/Widget.MaterialComponents.Button.TextButton"
                     android:layout_width="60dp"

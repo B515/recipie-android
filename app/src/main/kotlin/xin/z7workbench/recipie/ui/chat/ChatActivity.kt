@@ -21,6 +21,7 @@ import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.delay
 import okio.Okio
+import org.jetbrains.anko.alert
 import org.jetbrains.anko.defaultSharedPreferences
 import org.jetbrains.anko.startActivity
 import xin.z7workbench.recipie.R
@@ -50,14 +51,19 @@ class ChatActivity : SocketActivity() {
         toUser = intent.getStringExtra("to_user") ?: ""
         isPrivateConversation = intent.getBooleanExtra("private", false)
         if (isPrivateConversation) {
+            following.visibility = View.GONE
+            follower.visibility = View.GONE
+            profile.visibility = View.GONE
             online_users.visibility = View.INVISIBLE
             online_users_text.visibility = View.INVISIBLE
             toolbar.title = toUser
             follow.setOnClickListener { followUser(toUser) }
             unfollow.setOnClickListener { unfollowUser(toUser) }
         } else {
-            follow.visibility = View.INVISIBLE
-            unfollow.visibility = View.INVISIBLE
+            follow.visibility = View.GONE
+            unfollow.visibility = View.GONE
+            following.setOnClickListener { following() }
+            follower.setOnClickListener { follower() }
         }
         setSupportActionBar(toolbar)
 
@@ -181,7 +187,11 @@ class ChatActivity : SocketActivity() {
                         toast("已" + (if (message.Op == "follow") "关注" else "取关") + message.User)
                     }
                     "following", "follower" -> {
-                        val message = gson.fromJson<SystemFollowingMessage>(json)
+                        val m = gson.fromJson<SystemFollowingMessage>(json)
+                        alert {
+                            title = if (m.Op == "following") "关注中" else "关注者"
+                            message = m.UserList.joinToString(", ")
+                        }.show()
                     }
                 }
             }
