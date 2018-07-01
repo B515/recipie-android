@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="xin.z7workbench.recipie.ui.chat.ChatActivity">
+    android:layout_height="match_parent">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -25,6 +23,15 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="wrap_content"
+            android:layout_height="1dp"
+            app:layout_constraintBottom_toTopOf="@+id/send_message_layout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:srcCompat="@drawable/little_divider" />
 
         <TextView
             android:id="@+id/online_users_text"
@@ -74,29 +81,33 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:background="@android:color/white"
                 android:hint="@string/input_hint"
-                android:inputType="text" />
+                android:inputType="text"
+                android:padding="4dp" />
 
-            <Button
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/button_send_image"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
-                android:layout_width="60dp"
-                android:layout_height="wrap_content"
-                android:text="图片" />
-
-            <Button
-                android:id="@+id/button_send_file"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
-                android:layout_width="60dp"
-                android:layout_height="wrap_content"
-                android:text="文件" />
-
-            <Button
-                android:id="@+id/button_submit"
-                style="@style/Widget.AppCompat.Button.Colored"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/submit" />
+                android:padding="4dp"
+                android:text=""
+                app:srcCompat="@drawable/ic_picture" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/button_send_file"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="4dp"
+                android:text=""
+                app:srcCompat="@drawable/ic_document" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/button_submit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="4dp"
+                app:srcCompat="@drawable/ic_send" />
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
