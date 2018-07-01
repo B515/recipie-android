@@ -17,9 +17,9 @@ class MainActivity : AppCompatActivity() {
 //        startActivity<ChatActivity>()
         setSupportActionBar(bar)
 
-        nav_view.setNavigationItemSelectedListener{
+        nav_view.setNavigationItemSelectedListener {
 
-            when(it.itemId) {
+            when (it.itemId) {
                 R.id.action_home -> {
                     supportFragmentManager.beginTransaction()
                             .replace(R.id.container, HomeFragment())

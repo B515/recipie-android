@@ -8,6 +8,7 @@ import android.text.TextUtils
 import android.util.Base64
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.core.net.toFile
 import androidx.core.widget.toast
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,6 +22,7 @@ import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.delay
 import okio.Okio
 import org.jetbrains.anko.defaultSharedPreferences
+import org.jetbrains.anko.startActivity
 import xin.z7workbench.recipie.R
 import xin.z7workbench.recipie.entity.*
 import xin.z7workbench.recipie.ui.SocketActivity
@@ -34,6 +36,8 @@ class ChatActivity : SocketActivity() {
 
     private lateinit var adapter: ChatMessageAdapter
 
+    private var isPrivateConversation = false
+    private var toUser = ""
     private val receivingFilesParts: MutableMap<Int, MutableList<FileMessage>> = mutableMapOf()
     private val user: String by lazy { defaultSharedPreferences.getString("username", "") }
     private val pwd: String by lazy { defaultSharedPreferences.getString("password", "") }
@@ -41,6 +45,15 @@ class ChatActivity : SocketActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat)
+
+        toolbar.title = "聊天室"
+        toUser = intent.getStringExtra("to_user") ?: ""
+        isPrivateConversation = intent.getBooleanExtra("private", false)
+        if (isPrivateConversation) {
+            online_users.visibility = View.INVISIBLE
+            online_users_text.visibility = View.INVISIBLE
+            toolbar.title = toUser
+        }
         setSupportActionBar(toolbar)
 
         recycler.layoutManager = LinearLayoutManager(this)
@@ -73,7 +86,7 @@ class ChatActivity : SocketActivity() {
     }
 
     private fun sendTextMessage(text: String) {
-        val message = ServerMessage("all", "", user, now(), "text", text, null)
+        val message = ServerMessage(if (isPrivateConversation) "personal" else "all", toUser, user, now(), "text", text, null)
         sendMessage(message)
 
         adapter.add(message, true)
@@ -135,7 +148,7 @@ class ChatActivity : SocketActivity() {
 
                 adapter.add(message, false)
                 recycler.scrollToPosition(adapter.itemCount - 1)
-                updateOnlineUsers(message.OnlineUser ?: listOf())
+                if (!isPrivateConversation) updateOnlineUsers(message.OnlineUser ?: listOf())
             }
             "image", "file" -> {
                 if (obj.has("Content")) {
@@ -203,6 +216,9 @@ class ChatActivity : SocketActivity() {
             val chip = Chip(this)
             chip.text = it
             chip.setPadding(16, 10, 16, 10)
+            chip.setOnClickListener {
+                startActivity<ChatActivity>("private" to true, "to_user" to chip.text.toString())
+            }
             online_users.addView(chip)
         }
     }
