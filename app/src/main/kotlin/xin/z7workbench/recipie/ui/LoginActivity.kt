@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.os.Bundle
 import android.view.View
 import android.widget.EditText
+import com.bumptech.glide.Glide
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import kotlinx.android.synthetic.main.activity_login.*
@@ -23,6 +24,9 @@ class LoginActivity : SocketActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+        Glide.with(this).load(R.drawable.login_bg).into(bg)
+        username.setText(defaultSharedPreferences.getString("username", ""))
+        password.setText(defaultSharedPreferences.getString("password", ""))
         login.setOnClickListener {
             defaultSharedPreferences.edit()
                     .putString("username", username.text.toString())

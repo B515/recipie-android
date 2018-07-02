@@ -5,16 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.google.android.material.navigation.NavigationView
-        android:id="@+id/nav_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clickable="true"
-        android:fitsSystemWindows="true"
-        android:focusable="true"
-        app:headerLayout="@layout/drawer_header"
-        app:menu="@menu/menu_drawer" />
-
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -47,4 +37,13 @@
             app:layout_anchor="@id/bar" />
         <!--Navigation drawer is under development-->
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/navigation"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start|left"
+        app:headerLayout="@layout/drawer_header"
+        app:menu="@menu/menu_drawer" />
+
 </androidx.drawerlayout.widget.DrawerLayout>
