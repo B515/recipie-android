@@ -9,6 +9,7 @@ import kotlinx.coroutines.experimental.async
 import okio.BufferedSink
 import okio.BufferedSource
 import okio.Okio
+import org.jetbrains.anko.defaultSharedPreferences
 import java.io.IOException
 import java.net.Socket
 
@@ -23,11 +24,11 @@ abstract class SocketActivity : AppCompatActivity() {
     fun connect() = async(UI) {
         async {
             try {
-                val host = listOf("123.206.13.211", "192.168.1.105")[0]
+                val host = defaultSharedPreferences.getString("server", "123.206.13.211")
                 socket = Socket(host, 8964)
                 sink = Okio.buffer(Okio.sink(socket))
                 source = Okio.buffer(Okio.source(socket))
-                runOnUiThread { toast("Socket 已连接") }
+                runOnUiThread { toast("Socket 已连接，IP: $host") }
             } catch (e: IOException) {
                 e.printStackTrace()
                 runOnUiThread { toast("Socket 连接失败") }

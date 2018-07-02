@@ -1,6 +1,7 @@
 package xin.z7workbench.recipie.ui.chat
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -8,6 +9,8 @@ import android.text.TextUtils
 import android.util.Base64
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.EditText
 import androidx.core.net.toFile
 import androidx.core.widget.toast
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,7 +23,9 @@ import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.delay
 import okio.Okio
+import org.jetbrains.anko.alert
 import org.jetbrains.anko.defaultSharedPreferences
+import org.jetbrains.anko.startActivity
 import xin.z7workbench.recipie.R
 import xin.z7workbench.recipie.entity.*
 import xin.z7workbench.recipie.ui.SocketActivity
@@ -34,6 +39,8 @@ class ChatActivity : SocketActivity() {
 
     private lateinit var adapter: ChatMessageAdapter
 
+    private var isPrivateConversation = false
+    private var toUser = ""
     private val receivingFilesParts: MutableMap<Int, MutableList<FileMessage>> = mutableMapOf()
     private val user: String by lazy { defaultSharedPreferences.getString("username", "") }
     private val pwd: String by lazy { defaultSharedPreferences.getString("password", "") }
@@ -41,6 +48,26 @@ class ChatActivity : SocketActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat)
+
+        toolbar.title = "聊天室"
+        toUser = intent.getStringExtra("to_user") ?: ""
+        isPrivateConversation = intent.getBooleanExtra("private", false)
+        if (isPrivateConversation) {
+            following.visibility = View.GONE
+            follower.visibility = View.GONE
+            profile.visibility = View.GONE
+            online_users.visibility = View.INVISIBLE
+            online_users_text.visibility = View.INVISIBLE
+            toolbar.title = toUser
+            follow.setOnClickListener { followUser(toUser) }
+            unfollow.setOnClickListener { unfollowUser(toUser) }
+        } else {
+            follow.visibility = View.GONE
+            unfollow.visibility = View.GONE
+            following.setOnClickListener { following() }
+            follower.setOnClickListener { follower() }
+            profile.setOnClickListener { viewInfo() }
+        }
         setSupportActionBar(toolbar)
 
         recycler.layoutManager = LinearLayoutManager(this)
@@ -73,7 +100,7 @@ class ChatActivity : SocketActivity() {
     }
 
     private fun sendTextMessage(text: String) {
-        val message = ServerMessage("all", "", user, now(), "text", text, null)
+        val message = ServerMessage(if (isPrivateConversation) "personal" else "all", toUser, user, now(), "text", text, null)
         sendMessage(message)
 
         adapter.add(message, true)
@@ -135,7 +162,7 @@ class ChatActivity : SocketActivity() {
 
                 adapter.add(message, false)
                 recycler.scrollToPosition(adapter.itemCount - 1)
-                updateOnlineUsers(message.OnlineUser ?: listOf())
+                if (!isPrivateConversation) updateOnlineUsers(message.OnlineUser ?: listOf())
             }
             "image", "file" -> {
                 if (obj.has("Content")) {
@@ -153,16 +180,50 @@ class ChatActivity : SocketActivity() {
             "system" -> {
                 when (obj["Op"].asString) {
                     "view_inf" -> {
-                        val message = gson.fromJson<SystemProfileMessage>(json)
+                        val m = gson.fromJson<SystemProfileMessage>(json)
+                        alert {
+                            title = "个人资料"
+                            message = "性别： ${if (m.Sex == 0) "女" else "男"}\n昵称： ${m.Nickname}"
+                            positiveButton("确定") {}
+                            negativeButton("编辑") {
+                                var sex = 0
+                                var nick = ""
+                                val b1 = AlertDialog.Builder(this@ChatActivity)
+                                b1.setTitle("性别：")
+                                b1.setSingleChoiceItems(arrayOf("女", "男"), sex) { _, which -> sex = which }
+                                b1.setPositiveButton("确定") { dialog, _ ->
+                                    dialog.dismiss()
+                                    val b2 = AlertDialog.Builder(this@ChatActivity)
+                                    val edittext = EditText(this@ChatActivity)
+                                    b2.setMessage("昵称：")
+                                    b2.setView(edittext)
+                                    b2.setPositiveButton("确定") { _, _ ->
+                                        nick = edittext.text.toString()
+                                        updateInfo(nick, sex)
+                                    }
+                                    b2.create().show()
+                                }
+                                b1.create().show()
+                            }
+                        }.show()
                     }
                     "update_inf" -> {
-                        val message = gson.fromJson<SystemMessage>(json)
+                        val m = gson.fromJson<SystemMessage>(json)
+                        alert {
+                            title = "个人资料修改" + if (m.Result) "成功" else "失败"
+                            message = ""
+                        }.show()
                     }
                     "follow", "unfollow" -> {
                         val message = gson.fromJson<SystemFollowMessage>(json)
+                        toast("已" + (if (message.Op == "follow") "关注" else "取关") + message.User)
                     }
                     "following", "follower" -> {
-                        val message = gson.fromJson<SystemFollowingMessage>(json)
+                        val m = gson.fromJson<SystemFollowingMessage>(json)
+                        alert {
+                            title = if (m.Op == "following") "关注中" else "关注者"
+                            message = m.UserList.joinToString(", ")
+                        }.show()
                     }
                 }
             }
@@ -203,6 +264,9 @@ class ChatActivity : SocketActivity() {
             val chip = Chip(this)
             chip.text = it
             chip.setPadding(16, 10, 16, 10)
+            chip.setOnClickListener {
+                startActivity<ChatActivity>("private" to true, "to_user" to chip.text.toString())
+            }
             online_users.addView(chip)
         }
     }

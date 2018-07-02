@@ -9,12 +9,63 @@
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+            android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="end">
+
+                <Button
+                    android:id="@+id/profile"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="80dp"
+                    android:layout_height="match_parent"
+                    android:text="个人资料"
+                    android:textColor="?attr/colorAccent" />
+
+                <Button
+                    android:id="@+id/following"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="70dp"
+                    android:layout_height="match_parent"
+                    android:text="关注中"
+                    android:textColor="?attr/colorAccent" />
+
+                <Button
+                    android:id="@+id/follower"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="70dp"
+                    android:layout_height="match_parent"
+                    android:text="关注者"
+                    android:textColor="?attr/colorAccent" />
+
+                <Button
+                    android:id="@+id/follow"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="60dp"
+                    android:layout_height="match_parent"
+                    android:text="关注"
+                    android:textColor="?attr/colorAccent" />
+
+                <Button
+                    android:id="@+id/unfollow"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="60dp"
+                    android:layout_height="match_parent"
+                    android:text="取关"
+                    android:textColor="?attr/colorAccent" />
+            </LinearLayout>
+        </FrameLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -90,22 +141,23 @@
                 android:id="@+id/button_send_image"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_margin="4dp"
                 android:padding="4dp"
-                android:text=""
                 app:srcCompat="@drawable/ic_picture" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/button_send_file"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_margin="4dp"
                 android:padding="4dp"
-                android:text=""
                 app:srcCompat="@drawable/ic_document" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/button_submit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_margin="4dp"
                 android:padding="4dp"
                 app:srcCompat="@drawable/ic_send" />
         </LinearLayout>
