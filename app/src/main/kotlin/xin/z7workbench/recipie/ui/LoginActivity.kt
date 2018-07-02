@@ -1,7 +1,9 @@
 package xin.z7workbench.recipie.ui
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.View
+import android.widget.EditText
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import kotlinx.android.synthetic.main.activity_login.*
@@ -42,6 +44,19 @@ class LoginActivity : SocketActivity() {
                     .putString("password", password1.text.toString())
                     .apply()
             register(username1.text.toString(), password1.text.toString(), "nickname")
+        }
+        changeip.setOnClickListener {
+            val b = AlertDialog.Builder(this)
+            val edittext = EditText(this)
+            b.setMessage("Server IP：")
+            b.setView(edittext)
+            b.setPositiveButton("确定") { _, _ ->
+                val server = edittext.text.toString()
+                if (!server.isBlank())
+                    defaultSharedPreferences.edit().putString("server", server).apply()
+                else defaultSharedPreferences.edit().remove("server").apply()
+            }
+            b.create().show()
         }
         connect()
     }
