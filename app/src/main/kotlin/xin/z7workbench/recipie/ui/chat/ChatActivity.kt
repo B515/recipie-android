@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Base64
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -139,7 +140,7 @@ class ChatActivity : SocketActivity() {
             toast("发送完毕")
         } catch (e: Exception) {
             e.printStackTrace()
-            alert { message = e.message ?: "" }.show()
+            alert { message = Log.getStackTraceString(e) }.show()
         }
     }
 
@@ -261,7 +262,7 @@ class ChatActivity : SocketActivity() {
             toast("接收完毕")
         } catch (e: Exception) {
             e.printStackTrace()
-            alert { message = e.message ?: "" }.show()
+            alert { message = Log.getStackTraceString(e) }.show()
         }
         return@async
     }
