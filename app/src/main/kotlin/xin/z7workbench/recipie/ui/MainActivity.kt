@@ -1,5 +1,6 @@
 package xin.z7workbench.recipie.ui
 
+import android.Manifest
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -8,9 +9,12 @@ import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.drawer_header.view.*
 import org.jetbrains.anko.startActivity
+import permissions.dispatcher.NeedsPermission
+import permissions.dispatcher.RuntimePermissions
 import xin.z7workbench.recipie.R
 import xin.z7workbench.recipie.ui.chat.ChatActivity
 
+@RuntimePermissions
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,6 +53,11 @@ class MainActivity : AppCompatActivity() {
                 .commit()
     }
 
+    @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    fun launchChat() {
+        startActivity<ChatActivity>()
+    }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_main, menu)
@@ -57,9 +66,14 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.action_chat -> {
-            startActivity<ChatActivity>()
+            launchChatWithPermissionCheck()
             true
         }
         else -> super.onOptionsItemSelected(item)
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        onRequestPermissionsResult(requestCode, grantResults)
     }
 }

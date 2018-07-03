@@ -7,18 +7,17 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Base64
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.EditText
-import androidx.core.net.toFile
 import androidx.core.widget.toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.chip.Chip
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import kotlinx.android.synthetic.main.activity_chat.*
-import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.delay
@@ -30,6 +29,7 @@ import xin.z7workbench.recipie.R
 import xin.z7workbench.recipie.entity.*
 import xin.z7workbench.recipie.ui.SocketActivity
 import xin.z7workbench.recipie.util.getAbsolutePath
+import xin.z7workbench.recipie.util.getPath
 import xin.z7workbench.recipie.util.rand
 import java.io.File
 import java.text.SimpleDateFormat
@@ -95,7 +95,7 @@ class ChatActivity : SocketActivity() {
     }
 
     private fun login() = async(UI) {
-        delay(1)
+        delay(10)
         sendMessage(AuthRequestMessage("login", user, pwd, ""))
     }
 
@@ -109,32 +109,39 @@ class ChatActivity : SocketActivity() {
 
 
     private fun sendFileMessage(uri: Uri, image: Boolean = false) = async(UI) {
-        val file = uri.toFile()
-        if (file.length() == 0L) {
+        val path = getPath(this@ChatActivity, uri)
+        if (path == null) {
             toast("无效的文件")
             return@async
         }
+        val file = File(path)
         val type = if (image) "image" else "file"
         val id = rand(10000000..99999999)
-        val message = FileInfoMessage("all", "", user, now(), type,
+        val m = FileInfoMessage("all", "", user, now(), type,
                 file.name, file.length().toInt(), id)
-        sendMessage(message)
+        sendMessage(m)
+        delay(10)
 
-        adapter.add(message, true, file.absolutePath)
+        adapter.add(m, true, file.absolutePath)
         recycler.scrollToPosition(adapter.itemCount - 1)
 
-        val buffer = Okio.buffer(Okio.source(file))
-        var sent = 0
-        while (!buffer.exhausted()) {
-            async(CommonPool) {
-                val array = if (buffer.request(8192)) buffer.readByteArray(8192) else buffer.readByteArray()
-                val part = FileMessage(type, id, Base64.encodeToString(array, Base64.NO_WRAP))
-                sendMessage(part)
-                sent += array.size
-            }.await()
-            adapter.updateFileProgress(id, sent)
+        try {
+            val buffer = Okio.buffer(Okio.source(file))
+            var sent = 0
+            while (!buffer.exhausted()) {
+                async {
+                    val array = if (buffer.request(8192)) buffer.readByteArray(8192) else buffer.readByteArray()
+                    val part = FileMessage(type, id, Base64.encodeToString(array, Base64.NO_WRAP))
+                    sendMessage(part)
+                    sent += array.size
+                }.await()
+                adapter.updateFileProgress(id, sent)
+            }
+            toast("发送完毕")
+        } catch (e: Exception) {
+            e.printStackTrace()
+            alert { message = Log.getStackTraceString(e) }.show()
         }
-        toast("发送完毕")
     }
 
     private fun viewInfo() = sendMessage(SystemMessage("view_inf"))
@@ -238,7 +245,7 @@ class ChatActivity : SocketActivity() {
             val parts = receivingFilesParts[info.MsgID]!!
 
             while (received < info.FileSize) {
-                async(CommonPool) {
+                async {
                     while (parts.isEmpty()) {
                         delay(50L)
                     }
@@ -252,10 +259,12 @@ class ChatActivity : SocketActivity() {
             }
             fileSink.close()
             receivingFilesParts.remove(info.MsgID)
+            toast("接收完毕")
         } catch (e: Exception) {
             e.printStackTrace()
+            alert { message = Log.getStackTraceString(e) }.show()
         }
-        toast("接收完毕")
+        return@async
     }
 
     private fun updateOnlineUsers(users: List<String>) {

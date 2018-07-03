@@ -10,6 +10,7 @@ import okio.BufferedSink
 import okio.BufferedSource
 import okio.Okio
 import org.jetbrains.anko.defaultSharedPreferences
+import xin.z7workbench.recipie.entity.SystemMessage
 import java.io.IOException
 import java.net.Socket
 
@@ -65,7 +66,14 @@ abstract class SocketActivity : AppCompatActivity() {
     abstract fun processMessage(json: String)
 
     override fun onDestroy() {
-        socket.close()
+        try {
+            sendMessage(SystemMessage("close"))
+            source.close()
+            sink.close()
+            socket.close()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
         super.onDestroy()
     }
 }
