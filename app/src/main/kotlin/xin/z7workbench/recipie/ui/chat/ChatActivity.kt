@@ -94,7 +94,7 @@ class ChatActivity : SocketActivity() {
     }
 
     private fun login() = async(UI) {
-        delay(1)
+        delay(10)
         sendMessage(AuthRequestMessage("login", user, pwd, ""))
     }
 
@@ -119,6 +119,7 @@ class ChatActivity : SocketActivity() {
         val m = FileInfoMessage("all", "", user, now(), type,
                 file.name, file.length().toInt(), id)
         sendMessage(m)
+        delay(10)
 
         adapter.add(m, true, file.absolutePath)
         recycler.scrollToPosition(adapter.itemCount - 1)
