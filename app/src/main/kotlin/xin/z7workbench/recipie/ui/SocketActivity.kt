@@ -71,7 +71,7 @@ abstract class SocketActivity : AppCompatActivity() {
             source.close()
             sink.close()
             socket.close()
-        } catch (e: IOException) {
+        } catch (e: Exception) {
             e.printStackTrace()
         }
         super.onDestroy()

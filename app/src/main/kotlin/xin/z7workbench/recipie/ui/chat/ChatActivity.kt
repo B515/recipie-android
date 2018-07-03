@@ -11,7 +11,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.EditText
-import androidx.core.net.toFile
 import androidx.core.widget.toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.chip.Chip
@@ -29,6 +28,7 @@ import xin.z7workbench.recipie.R
 import xin.z7workbench.recipie.entity.*
 import xin.z7workbench.recipie.ui.SocketActivity
 import xin.z7workbench.recipie.util.getAbsolutePath
+import xin.z7workbench.recipie.util.getPath
 import xin.z7workbench.recipie.util.rand
 import java.io.File
 import java.text.SimpleDateFormat
@@ -108,11 +108,12 @@ class ChatActivity : SocketActivity() {
 
 
     private fun sendFileMessage(uri: Uri, image: Boolean = false) = async(UI) {
-        val file = uri.toFile()
-        if (file.length() == 0L) {
+        val path = getPath(this@ChatActivity, uri)
+        if (path == null) {
             toast("无效的文件")
             return@async
         }
+        val file = File(path)
         val type = if (image) "image" else "file"
         val id = rand(10000000..99999999)
         val m = FileInfoMessage("all", "", user, now(), type,
