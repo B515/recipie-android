@@ -5,7 +5,7 @@ import android.net.Uri
 import android.os.Environment
 import java.io.File
 
-fun getAbsolutePath(id:Int,name:String): String {
+fun getAbsolutePath(id: Int, name: String): String {
     val folder = File("${Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath}/Recipie/")
     if (!folder.exists()) folder.mkdirs()
     return "${folder.absolutePath}/${id}_$name"

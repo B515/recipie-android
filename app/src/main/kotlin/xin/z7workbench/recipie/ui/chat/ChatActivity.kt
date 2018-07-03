@@ -18,7 +18,6 @@ import com.google.android.material.chip.Chip
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import kotlinx.android.synthetic.main.activity_chat.*
-import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.delay
@@ -116,25 +115,30 @@ class ChatActivity : SocketActivity() {
         }
         val type = if (image) "image" else "file"
         val id = rand(10000000..99999999)
-        val message = FileInfoMessage("all", "", user, now(), type,
+        val m = FileInfoMessage("all", "", user, now(), type,
                 file.name, file.length().toInt(), id)
-        sendMessage(message)
+        sendMessage(m)
 
-        adapter.add(message, true, file.absolutePath)
+        adapter.add(m, true, file.absolutePath)
         recycler.scrollToPosition(adapter.itemCount - 1)
 
-        val buffer = Okio.buffer(Okio.source(file))
-        var sent = 0
-        while (!buffer.exhausted()) {
-            async(CommonPool) {
-                val array = if (buffer.request(8192)) buffer.readByteArray(8192) else buffer.readByteArray()
-                val part = FileMessage(type, id, Base64.encodeToString(array, Base64.NO_WRAP))
-                sendMessage(part)
-                sent += array.size
-            }.await()
-            adapter.updateFileProgress(id, sent)
+        try {
+            val buffer = Okio.buffer(Okio.source(file))
+            var sent = 0
+            while (!buffer.exhausted()) {
+                async {
+                    val array = if (buffer.request(8192)) buffer.readByteArray(8192) else buffer.readByteArray()
+                    val part = FileMessage(type, id, Base64.encodeToString(array, Base64.NO_WRAP))
+                    sendMessage(part)
+                    sent += array.size
+                }.await()
+                adapter.updateFileProgress(id, sent)
+            }
+            toast("发送完毕")
+        } catch (e: Exception) {
+            e.printStackTrace()
+            alert { message = e.message ?: "" }.show()
         }
-        toast("发送完毕")
     }
 
     private fun viewInfo() = sendMessage(SystemMessage("view_inf"))
@@ -238,7 +242,7 @@ class ChatActivity : SocketActivity() {
             val parts = receivingFilesParts[info.MsgID]!!
 
             while (received < info.FileSize) {
-                async(CommonPool) {
+                async {
                     while (parts.isEmpty()) {
                         delay(50L)
                     }
@@ -252,10 +256,12 @@ class ChatActivity : SocketActivity() {
             }
             fileSink.close()
             receivingFilesParts.remove(info.MsgID)
+            toast("接收完毕")
         } catch (e: Exception) {
             e.printStackTrace()
+            alert { message = e.message ?: "" }.show()
         }
-        toast("接收完毕")
+        return@async
     }
 
     private fun updateOnlineUsers(users: List<String>) {
