@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.GravityCompat
 import androidx.navigation.Navigation
 import androidx.navigation.ui.NavigationUI
 import com.bumptech.glide.Glide
@@ -24,6 +25,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(bar)
 
+        bar.setNavigationOnClickListener { drawer.openDrawer(GravityCompat.START) }
         Glide.with(this).load(R.drawable.login_bg).into(navigation.getHeaderView(0).bg)
         NavigationUI.setupWithNavController(navigation, Navigation.findNavController(this, R.id.nav_host_fragment))
     }

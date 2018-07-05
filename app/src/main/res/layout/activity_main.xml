@@ -10,12 +10,12 @@
         android:layout_height="match_parent">
 
         <fragment
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
             android:id="@+id/nav_host_fragment"
             android:name="androidx.navigation.fragment.NavHostFragment"
-            app:navGraph="@navigation/nav_graph"
-            app:defaultNavHost="true" />
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:defaultNavHost="true"
+            app:navGraph="@navigation/nav_graph" />
 
         <com.google.android.material.bottomappbar.BottomAppBar
             android:id="@+id/bar"
@@ -24,6 +24,8 @@
             android:layout_gravity="bottom"
             android:elevation="2dp"
             app:fabAlignmentMode="center"
+            app:fabCradleMargin="10dp"
+            app:fabCradleRoundedCornerRadius="10dp"
             app:fabCradleVerticalOffset="5dp"
             app:navigationIcon="@drawable/ic_other">
 
