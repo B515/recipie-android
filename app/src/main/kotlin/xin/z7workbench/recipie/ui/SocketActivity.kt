@@ -1,7 +1,6 @@
 package xin.z7workbench.recipie.ui
 
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.widget.toast
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import kotlinx.coroutines.experimental.android.UI
@@ -10,6 +9,7 @@ import okio.BufferedSink
 import okio.BufferedSource
 import okio.Okio
 import org.jetbrains.anko.defaultSharedPreferences
+import org.jetbrains.anko.toast
 import xin.z7workbench.recipie.entity.SystemMessage
 import java.io.IOException
 import java.net.Socket
