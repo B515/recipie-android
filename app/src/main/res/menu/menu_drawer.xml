@@ -3,26 +3,26 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/action_home"
+        android:id="@+id/homeFragment"
         android:icon="@drawable/ic_homepage_fill"
         android:orderInCategory="1"
         android:title="主页"
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/action_info"
+        android:id="@+id/userInfoFragment"
         android:icon="@drawable/ic_people_fill"
         android:orderInCategory="1"
         android:title="个人信息"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/action_follow"
+        android:id="@+id/followFragment"
         android:icon="@drawable/ic_addressbook_fill"
         android:orderInCategory="2"
         android:title="关注列表"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/action_favorite"
+        android:id="@+id/favoriteFragment"
         android:icon="@drawable/ic_collection_fill"
         android:orderInCategory="3"
         android:title="收藏夹"

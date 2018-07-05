@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="xin.z7workbench.recipie.ui.HomeFragment"
+        tools:layout="@layout/fragment_home"
+        android:label="HomeFragment" />
+    <fragment
+        android:id="@+id/userInfoFragment"
+        android:name="xin.z7workbench.recipie.ui.UserInfoFragment"
+        tools:layout="@layout/fragment_user_info"
+        android:label="UserInfoFragment" />
+    <fragment
+        android:id="@+id/followFragment"
+        android:name="xin.z7workbench.recipie.ui.FollowFragment"
+        tools:layout="@layout/recycler"
+        android:label="FollowFragment" />
+    <fragment
+        android:id="@+id/favoriteFragment"
+        android:name="xin.z7workbench.recipie.ui.FavoriteFragment"
+        tools:layout="@layout/recycler"
+        android:label="FavoriteFragment" />
+</navigation>
