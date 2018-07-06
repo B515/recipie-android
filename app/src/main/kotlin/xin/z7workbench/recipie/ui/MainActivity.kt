@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity() {
         NavigationUI.setupWithNavController(navigation, findNavController(R.id.nav_host_fragment))
         
         fab.setOnClickListener {
-            startActivity<EditRecipeActivity>()
+            startActivity<RecipeActivity>()
         }
     }
 

@@ -13,6 +13,7 @@
         android:label="RecipeDetailFragment" >
         <action
             android:id="@+id/action_recipeDetailFragment_to_recipeDisplayFragment"
-            app:destination="@id/recipeDisplayFragment" />
+            app:destination="@id/recipeDisplayFragment"
+            app:enterAnim="@anim/nav_default_pop_enter_anim" />
     </fragment>
 </navigation>
