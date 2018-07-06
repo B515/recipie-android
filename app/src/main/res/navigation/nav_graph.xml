@@ -18,11 +18,11 @@
     <fragment
         android:id="@+id/followFragment"
         android:name="xin.z7workbench.recipie.ui.FollowFragment"
-        tools:layout="@layout/recycler"
+        tools:layout="@layout/fragment_recycler"
         android:label="FollowFragment" />
     <fragment
         android:id="@+id/favoriteFragment"
         android:name="xin.z7workbench.recipie.ui.FavoriteFragment"
-        tools:layout="@layout/recycler"
+        tools:layout="@layout/fragment_recycler"
         android:label="FavoriteFragment" />
 </navigation>

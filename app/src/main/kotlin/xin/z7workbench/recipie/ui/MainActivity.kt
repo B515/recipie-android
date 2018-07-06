@@ -28,6 +28,10 @@ class MainActivity : AppCompatActivity() {
         bar.setNavigationOnClickListener { drawer.openDrawer(GravityCompat.START) }
         Glide.with(this).load(R.drawable.login_bg).into(navigation.getHeaderView(0).bg)
         NavigationUI.setupWithNavController(navigation, findNavController(R.id.nav_host_fragment))
+        
+        fab.setOnClickListener {
+            startActivity<EditRecipeActivity>()
+        }
     }
 
     @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)

@@ -16,4 +16,10 @@
 
     <string name="welcome">欢迎您</string>
 
+    <string name="recipe_name">菜谱名称</string>
+    <string name="description">描述</string>
+
+    <string name="edit_recipe">编辑菜谱</string>
+    <string name="recipe_detail">菜谱详情</string>
+    <string name="comment">评论</string>
 </resources>
