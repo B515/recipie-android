@@ -26,9 +26,8 @@
             android:name=".ui.EditRecipeActivity"
             android:label="@string/edit_recipe" />
         <activity
-            android:name=".ui.RecipeDetailActivity"
+            android:name=".ui.RecipeActivity"
             android:label="@string/recipe_detail" />
-        <activity android:name=".ui.RecipeDisplayActivity" />
     </application>
 
 </manifest>

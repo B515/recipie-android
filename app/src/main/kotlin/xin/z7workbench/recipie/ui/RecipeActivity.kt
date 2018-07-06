@@ -5,11 +5,11 @@ import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.app_bar.*
 import xin.z7workbench.recipie.R
 
-class RecipeDisplayActivity: AppCompatActivity() {
+class RecipeActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_recipe_display)
+        setContentView(R.layout.activity_recipe)
         setSupportActionBar(toolbar)
 
         // set data

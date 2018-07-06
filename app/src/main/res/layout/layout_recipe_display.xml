@@ -4,28 +4,9 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <ImageView
-        android:id="@+id/pic"
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/viewPager"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:adjustViewBounds="true" />
+        android:layout_height="match_parent"/>
 
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <TextView
-                android:id="@+id/description"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="6dp"
-                android:text="TextView"
-                android:textColor="@android:color/black"
-                android:textSize="18sp" />
-
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
 </LinearLayout>
