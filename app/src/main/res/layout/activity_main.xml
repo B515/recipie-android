@@ -37,6 +37,7 @@
             android:layout_height="wrap_content"
             android:src="@drawable/ic_add"
             app:backgroundTint="@color/colorAccent"
+            app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior"
             app:elevation="2dp"
             app:layout_anchor="@id/bar" />
         <!--Navigation drawer is under development-->

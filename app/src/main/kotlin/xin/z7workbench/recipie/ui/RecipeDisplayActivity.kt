@@ -2,21 +2,16 @@ package xin.z7workbench.recipie.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.android.synthetic.main.activity_recipe_detail.*
 import kotlinx.android.synthetic.main.app_bar.*
-import org.jetbrains.anko.startActivity
 import xin.z7workbench.recipie.R
 
-class RecipeDetailActivity : AppCompatActivity() {
+class RecipeDisplayActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_recipe_detail)
+        setContentView(R.layout.activity_recipe_display)
         setSupportActionBar(toolbar)
 
         // set data
-        play.setOnClickListener {
-            startActivity<RecipeDisplayActivity>()
-        }
     }
 }

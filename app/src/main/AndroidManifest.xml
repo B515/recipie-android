@@ -28,6 +28,7 @@
         <activity
             android:name=".ui.RecipeDetailActivity"
             android:label="@string/recipe_detail" />
+        <activity android:name=".ui.RecipeDisplayActivity" />
     </application>
 
 </manifest>
