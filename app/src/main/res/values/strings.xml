@@ -20,4 +20,5 @@
     <string name="description">描述</string>
 
     <string name="edit_recipe">编辑菜谱</string>
+    <string name="recipe_detail">菜谱详情</string>
 </resources>

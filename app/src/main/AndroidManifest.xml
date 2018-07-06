@@ -22,8 +22,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.EditRecipeActivity"
-            android:label="@string/edit_recipe"/>
+        <activity
+            android:name=".ui.EditRecipeActivity"
+            android:label="@string/edit_recipe" />
+        <activity
+            android:name=".ui.RecipeDetailActivity"
+            android:label="@string/recipe_detail" />
     </application>
 
 </manifest>
