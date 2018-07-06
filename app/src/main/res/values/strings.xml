@@ -21,4 +21,5 @@
 
     <string name="edit_recipe">编辑菜谱</string>
     <string name="recipe_detail">菜谱详情</string>
+    <string name="comment">评论</string>
 </resources>
