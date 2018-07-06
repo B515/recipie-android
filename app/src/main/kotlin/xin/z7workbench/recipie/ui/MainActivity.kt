@@ -6,7 +6,7 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
-import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.activity_main.*
@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
 
         bar.setNavigationOnClickListener { drawer.openDrawer(GravityCompat.START) }
         Glide.with(this).load(R.drawable.login_bg).into(navigation.getHeaderView(0).bg)
-        NavigationUI.setupWithNavController(navigation, Navigation.findNavController(this, R.id.nav_host_fragment))
+        NavigationUI.setupWithNavController(navigation, findNavController(R.id.nav_host_fragment))
     }
 
     @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
