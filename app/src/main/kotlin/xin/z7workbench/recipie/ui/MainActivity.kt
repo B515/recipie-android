@@ -28,9 +28,9 @@ class MainActivity : AppCompatActivity() {
         bar.setNavigationOnClickListener { drawer.openDrawer(GravityCompat.START) }
         Glide.with(this).load(R.drawable.login_bg).into(navigation.getHeaderView(0).bg)
         NavigationUI.setupWithNavController(navigation, findNavController(R.id.nav_host_fragment))
-        
+
         fab.setOnClickListener {
-            startActivity<RecipeActivity>()
+            startActivity<RecipeActivity>("recipe_id" to 1)
         }
     }
 
