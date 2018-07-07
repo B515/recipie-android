@@ -26,6 +26,6 @@ class RecipeViewModel : ViewModel() {
     val recipe: MutableLiveData<Recipe?> = MutableLiveData()
 
     fun loadRecipe(id: Int) {
-        recipe.value = Recipe(0, "Chicken", "", 0, 0, 0)
+        recipe.value = Recipe(0, "Chicken", "", null, 0, 0, 0)
     }
 }
