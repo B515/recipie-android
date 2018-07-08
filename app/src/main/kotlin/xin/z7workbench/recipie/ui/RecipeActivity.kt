@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProviders
 import kotlinx.android.synthetic.main.app_bar.*
 import xin.z7workbench.recipie.R
+import xin.z7workbench.recipie.api.RecipieRetrofit
 import xin.z7workbench.recipie.entity.Recipe
 
 class RecipeActivity : AppCompatActivity() {
@@ -27,6 +28,7 @@ class RecipeViewModel : ViewModel() {
     val recipe: MutableLiveData<Recipe?> = MutableLiveData()
 
     fun loadRecipe(id: Int) {
-        recipe.value = Recipe(0, "Chicken", "Cook Chicken", null, 0, 0, 0)
+        RecipieRetrofit.recipe.getRecipe(id)
+        recipe.value = Recipe(0, "Chicken", "Cook Chicken", "", null, 0, 0, 0)
     }
 }

@@ -10,11 +10,10 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 object RecipieRetrofit {
-    private val server = "http://123.206.13.211"
-    private val jwt = JwtInterceptor("")
+    private val server = "http://123.207.164.148:1997"
+    private val ti = TokenInterceptor("")
     private val headers = Headers.Builder()
             .add("Origin", server)
-            .add("User-Agent", "")
             .add("Accept", "application/json, text/javascript, */*; q=0.01")
             .add("Accept-Encoding", "gzip, deflate")
             .build()
@@ -28,7 +27,7 @@ object RecipieRetrofit {
             .connectTimeout(5, TimeUnit.SECONDS)
             .readTimeout(5, TimeUnit.SECONDS)
             .addInterceptor { it.proceed(it.request().newBuilder().headers(headers).build()) }
-            .addInterceptor(jwt)
+            .addInterceptor(ti)
             .cookieJar(object : CookieJar {
                 private val cookieStore = HashMap<String, List<Cookie>>()
 
@@ -50,10 +49,11 @@ object RecipieRetrofit {
     }
 
     fun loadToken(token: String) {
-        jwt.token = token
+        ti.token = token
     }
 
     private inline fun <reified T> create(): T = retrofit.create<T>(T::class.java)
 
     val auth by lazy { create<AuthAPI>() }
+    val recipe by lazy { create<RecipeAPI>() }
 }

@@ -11,6 +11,7 @@ import androidx.navigation.Navigation
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.layout_recipe_detail.view.*
 import xin.z7workbench.recipie.R
+import xin.z7workbench.recipie.api.RecipieRetrofit
 
 class RecipeDetailFragment : Fragment() {
 
@@ -25,23 +26,27 @@ class RecipeDetailFragment : Fragment() {
                 play.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.action_recipeDetailFragment_to_recipeDisplayFragment))
                 comment.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.action_recipeDetailFragment_to_recipeCommentFragment))
                 name.text = it.title
-                description.text = it.content
+                description.text = it.description
                 like.visibility = View.GONE
                 favorite.visibility = View.GONE
 
                 like.setOnClickListener{
+                    RecipieRetrofit.recipe.likeRecipe(it.id)
                     like.visibility = View.GONE
                     not_like.visibility = View.VISIBLE
                 }
                 not_like.setOnClickListener{
+                    RecipieRetrofit.recipe.unlikeRecipe(it.id)
                     not_like.visibility = View.GONE
                     like.visibility = View.VISIBLE
                 }
                 favorite.setOnClickListener{
+                    RecipieRetrofit.recipe.collectRecipe(it.id)
                     favorite.visibility = View.GONE
                     not_favorite.visibility = View.VISIBLE
                 }
                 not_favorite.setOnClickListener{
+                    RecipieRetrofit.recipe.uncollectRecipe(it.id)
                     not_favorite.visibility = View.GONE
                     favorite.visibility = View.VISIBLE
                 }
