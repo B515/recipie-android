@@ -25,7 +25,7 @@ class RecipeDetailFragment : Fragment() {
                 play.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.action_recipeDetailFragment_to_recipeDisplayFragment))
                 comment.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.action_recipeDetailFragment_to_recipeCommentFragment))
                 name.text = it.title
-                description.text = it.content
+                description.text = it.description
                 like.visibility = View.GONE
                 favorite.visibility = View.GONE
 

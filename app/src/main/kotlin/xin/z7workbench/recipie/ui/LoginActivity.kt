@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.edit
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.layout_login.*
@@ -34,6 +35,8 @@ class LoginActivity : AppCompatActivity() {
             RecipieRetrofit.auth.login(username.text.toString(), "", password.text.toString())
                     .prepare(this).subscribe {
                         toast(it.token)
+                        defaultSharedPreferences.edit { putString("token", it.token) }
+                        RecipieRetrofit.loadToken(it.token)
                     }
             startActivity<MainActivity>()
             finish()
@@ -47,10 +50,10 @@ class LoginActivity : AppCompatActivity() {
             back()
         }
         do_register.setOnClickListener {
-            defaultSharedPreferences.edit()
-                    .putString("username", username1.text.toString())
-                    .putString("password", password1.text.toString())
-                    .apply()
+            defaultSharedPreferences.edit {
+                putString("username", username1.text.toString())
+                putString("password", password1.text.toString())
+            }
             RecipieRetrofit.auth.register(username1.text.toString(), "", password1.text.toString(), password1.text.toString())
                     .prepare(this).subscribe {
                         startActivity<MainActivity>()

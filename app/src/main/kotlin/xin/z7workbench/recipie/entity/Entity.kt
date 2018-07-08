@@ -31,10 +31,10 @@ data class User(val id: Int, var username: String, var password: String, var ema
 data class UserInfo(val id: Int, val user: User?, var gender: Int, var avatar: String,
                     var nickname: String)
 
-data class Recipe(val id: Int, var title: String, var content: String, val create_by: UserInfo?,
-                  val read_count: Int, val like_count: Int, val collect_count: Int)
+data class Recipe(val id: Int, var title: String, var description: String, var content: String,
+                  val create_by: UserInfo?, val read_count: Int, val like_count: Int, val collect_count: Int)
 
-data class Comment(val id: Int, val recipe: Recipe, val user: UserInfo?, val like_count: Int,
+data class Comment(val id: Int, val recipe: Recipe?, val user: UserInfo?, val like_count: Int,
                    var content: String)
 
 data class Tag(val id: Int, val title: String, val description: String)
