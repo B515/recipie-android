@@ -15,6 +15,7 @@ class RecipeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_recipe)
         setSupportActionBar(toolbar)
+        toolbar.setNavigationOnClickListener { onBackPressed() }
 
         val id = intent.extras.getInt("recipe_id")
         val viewModel = ViewModelProviders.of(this)[RecipeViewModel::class.java]

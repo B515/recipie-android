@@ -24,6 +24,25 @@ class RecipeDetailFragment : Fragment() {
                 Glide.with(this).load(R.drawable.login_bg).into(bg)
                 play.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.action_recipeDetailFragment_to_recipeDisplayFragment))
                 name.text = it.title
+                like.visibility = View.GONE
+                favorite.visibility = View.GONE
+
+                like.setOnClickListener{
+                    like.visibility = View.GONE
+                    not_like.visibility = View.VISIBLE
+                }
+                not_like.setOnClickListener{
+                    not_like.visibility = View.GONE
+                    like.visibility = View.VISIBLE
+                }
+                favorite.setOnClickListener{
+                    favorite.visibility = View.GONE
+                    not_favorite.visibility = View.VISIBLE
+                }
+                not_favorite.setOnClickListener{
+                    not_favorite.visibility = View.GONE
+                    favorite.visibility = View.VISIBLE
+                }
             }
         })
         return view
