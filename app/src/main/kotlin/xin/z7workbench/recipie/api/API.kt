@@ -15,4 +15,18 @@ interface AuthAPI {
     @POST("/auth/registration")
     fun register(@Field("username") username: String, @Field("email") email: String, @Field("password1") password1: String, @Field("password2") password2: String): Flowable<String>
 
+    @FormUrlEncoded
+    @POST("/users")
+    fun createUserInfo(@Field("nickname") nickname: String, @Field("gender") gender: Int, @Field("avatar") avatar: String, @Field("user") user: Int)
+}
+
+interface RecipeAPI {
+    fun createRecipe()
+    fun updateRecipe()
+    fun getRecipe()
+    fun likeRecipe()
+    fun unlikeRecipe()
+    fun collectRecipe()
+    fun uncollectRecipe()
+    fun createComment()
 }
