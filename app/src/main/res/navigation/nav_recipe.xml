@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<navigation xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     app:startDestination="@id/recipeDetailFragment">
     <fragment
         android:id="@+id/recipeDisplayFragment"
         android:name="xin.z7workbench.recipie.ui.RecipeDisplayFragment"
-        android:label="RecipeDisplayFragment" />
+        android:label="RecipeDisplayFragment"
+        tools:layout="@layout/layout_recipe_display" />
     <fragment
         android:id="@+id/recipeDetailFragment"
         android:name="xin.z7workbench.recipie.ui.RecipeDetailFragment"
-        android:label="RecipeDetailFragment" >
+        android:label="RecipeDetailFragment"
+        tools:layout="@layout/layout_recipe_detail">
         <action
             android:id="@+id/action_recipeDetailFragment_to_recipeDisplayFragment"
             app:destination="@id/recipeDisplayFragment"
