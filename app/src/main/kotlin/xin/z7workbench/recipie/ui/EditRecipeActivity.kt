@@ -1,26 +1,33 @@
 package xin.z7workbench.recipie.ui
 
+import android.Manifest
+import android.app.Activity
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.get
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.zhihu.matisse.Matisse
 import kotlinx.android.synthetic.main.activity_edit_recipe.*
 import kotlinx.android.synthetic.main.app_bar.*
 import kotlinx.android.synthetic.main.item_edit_recipe.view.*
 import xin.z7workbench.recipie.R
 import xin.z7workbench.recipie.entity.RecipeStep
+import xin.z7workbench.recipie.util.MatisseUtil
 
 class EditRecipeActivity : AppCompatActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_recipe)
         setSupportActionBar(toolbar)
         toolbar.setNavigationOnClickListener { onBackPressed() }
-        val recipesAdapter = RecipesAdapter()
+        val recipesAdapter = RecipesAdapter(this)
 
         val llm = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         recycler.apply {
@@ -51,9 +58,9 @@ class EditRecipeActivity : AppCompatActivity() {
         else -> super.onOptionsItemSelected(item)
     }
 
-    class RecipesAdapter(var list: MutableList<RecipeStep> = mutableListOf()) : RecyclerView.Adapter<RecipesAdapter.RecipesViewHolder>() {
+    class RecipesAdapter(val activity: Activity, var list: MutableList<RecipeStep> = mutableListOf()) : RecyclerView.Adapter<RecipesAdapter.RecipesViewHolder>() {
         // Recipes Types
-
+        private val ASK_PERMISSION = 2
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecipesViewHolder =
                 RecipesViewHolder(LayoutInflater.from(parent.context)
                         .inflate(R.layout.item_edit_recipe, parent, false))
@@ -66,6 +73,14 @@ class EditRecipeActivity : AppCompatActivity() {
                 delete.setOnClickListener {
                     list.removeAt(position)
                     notifyDataSetChanged()
+                }
+                pic.setOnClickListener {
+                    val hasPermission = activity.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+                    if (hasPermission != PackageManager.PERMISSION_GRANTED) {
+                        activity.requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), ASK_PERMISSION)
+                        return@setOnClickListener
+                    }
+                    MatisseUtil.selectFromActivity(activity, 1, position)
                 }
             }
         }
@@ -86,4 +101,13 @@ class EditRecipeActivity : AppCompatActivity() {
         override fun areContentsTheSame(p0: Int, p1: Int) = (old[p0].description == new[p1].description) && (old[p0].image == new[p1].image)
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK) {
+            Glide.with(this)
+                    .load(Matisse.obtainResult(data)[0].toString())
+                    .transition(DrawableTransitionOptions.withCrossFade())
+                    .into(recycler[requestCode].pic)
+        }
+    }
 }
