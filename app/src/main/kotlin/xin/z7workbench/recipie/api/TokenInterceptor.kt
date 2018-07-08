@@ -8,14 +8,14 @@ import java.io.IOException
  * Created by Yun on 2017.8.17.
  */
 
-class JwtInterceptor(var token: String) : Interceptor {
+class TokenInterceptor(var token: String) : Interceptor {
 
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
         if (token == "") return chain.proceed(chain.request())
         return chain.proceed(chain.request()
                 .newBuilder()
-                .header("Authorization", "Bearer $token")
+                .header("Authorization", "Token $token")
                 .build())
     }
 

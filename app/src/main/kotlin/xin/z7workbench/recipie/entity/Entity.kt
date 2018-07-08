@@ -26,6 +26,7 @@ data class SystemFollowMessage(val Op: String, val User: String, val MsgType: St
 data class SystemFollowingMessage(val Op: String, val UserList: List<String>, val MsgType: String = "system",
                                   val Result: Boolean = false)
 
+data class Token(val token: String)
 data class User(val id: Int, var username: String, var password: String, var email: String?)
 data class UserInfo(val id: Int, val user: User?, var gender: Int, var avatar: String,
                     var nickname: String)
