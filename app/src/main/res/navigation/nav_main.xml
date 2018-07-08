@@ -38,4 +38,9 @@
         android:name="xin.z7workbench.recipie.ui.EditInfoFragment"
         tools:layout="@layout/layout_edit_info"
         android:label="EditInfoFragment" />
+    <fragment
+        android:id="@+id/passwordFragment"
+        android:name="xin.z7workbench.recipie.ui.PasswordFragment"
+        tools:layout="@layout/fragment_password"
+        android:label="PasswordFragment" />
 </navigation>

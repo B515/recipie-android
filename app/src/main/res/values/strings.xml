@@ -5,6 +5,8 @@
     <string name="input_hint">输入消息</string>
 
     <string name="username">用户名</string>
+    <string name="old_psd">旧密码</string>
+    <string name="new_psd">新密码</string>
     <string name="psd">密码</string>
     <string name="psd_again">再次输入密码</string>
     <string name="register">注册</string>
