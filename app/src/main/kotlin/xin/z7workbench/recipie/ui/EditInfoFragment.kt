@@ -9,6 +9,7 @@ import kotlinx.android.synthetic.main.layout_edit_info.view.*
 import org.jetbrains.anko.selector
 import org.jetbrains.anko.toast
 import xin.z7workbench.recipie.R
+import xin.z7workbench.recipie.api.RecipieRetrofit
 
 class EditInfoFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -17,6 +18,7 @@ class EditInfoFragment : Fragment() {
         view.apply {
             back.setOnClickListener { activity?.onBackPressed() }
             confirm.setOnClickListener {
+                RecipieRetrofit.auth.updateUserInfo()
                 activity?.toast("修改完成！")
                 activity?.onBackPressed()
             }

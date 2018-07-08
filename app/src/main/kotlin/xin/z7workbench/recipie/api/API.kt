@@ -14,7 +14,11 @@ interface AuthAPI {
     fun register(@Field("username") username: String, @Field("email") email: String, @Field("password1") password1: String, @Field("password2") password2: String): Flowable<Token>
 
     @FormUrlEncoded
-    @POST("/users/")
+    @POST("/auth/password/change/")
+    fun changePassword(@Field("old_password") old_password: String, @Field("new_password1") new_password1: String, @Field("new_password2") new_password2: String)
+
+    @FormUrlEncoded
+    @POST("/api/users/")
     fun createUserInfo(@Field("nickname") nickname: String, @Field("gender") gender: Int, @Field("avatar") avatar: String, @Field("user") user: Int)
 
     fun updateUserInfo()
@@ -22,19 +26,19 @@ interface AuthAPI {
 
 interface RecipeAPI {
     @FormUrlEncoded
-    @POST("/recipes/")
+    @POST("/api/recipes/")
     fun createRecipe(@Field("title") title: String, @Field("content") content: String)
 
     @FormUrlEncoded
-    @PATCH("/recipes/{id}/")
+    @PATCH("/api/recipes/{id}/")
     fun updateRecipe(@Path("id") id: Int, @Field("title") title: String, @Field("content") content: String)
 
-    @GET("/recipes/{id}/")
+    @GET("/api/recipes/{id}/")
     fun getRecipe(@Path("id") id: Int)
 
-    fun likeRecipe()
-    fun unlikeRecipe()
-    fun collectRecipe()
-    fun uncollectRecipe()
-    fun createComment()
+    fun likeRecipe(id: Int)
+    fun unlikeRecipe(id: Int)
+    fun collectRecipe(id: Int)
+    fun uncollectRecipe(id: Int)
+    fun createComment(id: Int, content: String)
 }

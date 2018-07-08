@@ -8,14 +8,16 @@ import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_password.view.*
 import org.jetbrains.anko.toast
 import xin.z7workbench.recipie.R
+import xin.z7workbench.recipie.api.RecipieRetrofit
 
-class PasswordFragment: Fragment() {
+class PasswordFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_password, container, false)
 
         view.apply {
-            confirm.setOnClickListener{
+            confirm.setOnClickListener {
+                RecipieRetrofit.auth.changePassword(old_password.text.toString(), new_password.text.toString(), password_again.text.toString())
                 // TODO
                 activity?.toast("修改完成！")
                 activity?.onBackPressed()
