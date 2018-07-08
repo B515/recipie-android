@@ -14,7 +14,15 @@
         android:id="@+id/userInfoFragment"
         android:name="xin.z7workbench.recipie.ui.UserInfoFragment"
         tools:layout="@layout/fragment_user_info"
-        android:label="UserInfoFragment" />
+        android:label="UserInfoFragment" >
+        <action
+            android:id="@+id/action_userInfoFragment_to_editInfoFragment"
+            app:destination="@id/editInfoFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    </fragment>
     <fragment
         android:id="@+id/followFragment"
         android:name="xin.z7workbench.recipie.ui.FollowFragment"
@@ -25,4 +33,9 @@
         android:name="xin.z7workbench.recipie.ui.FavoriteFragment"
         tools:layout="@layout/fragment_recycler"
         android:label="FavoriteFragment" />
+    <fragment
+        android:id="@+id/editInfoFragment"
+        android:name="xin.z7workbench.recipie.ui.EditInfoFragment"
+        tools:layout="@layout/layout_edit_info"
+        android:label="EditInfoFragment" />
 </navigation>

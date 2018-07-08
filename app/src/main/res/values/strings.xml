@@ -24,4 +24,11 @@
     <string name="comment">评论</string>
     <string name="edit_comment">撰写评论&#8230;</string>
     <string name="delete">删除</string>
+
+    <string name="edit_info">修改信息</string>
+    <string name="nickname">昵称</string>
+    <string name="gender">性别</string>
+
+    <string name="confirm">确认</string>
+    <string name="choose">请选择</string>
 </resources>
