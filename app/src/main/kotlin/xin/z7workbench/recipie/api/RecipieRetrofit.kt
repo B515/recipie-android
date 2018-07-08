@@ -10,7 +10,7 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 object RecipieRetrofit {
-    private val server = "http://123.206.13.211"
+    private val server = "http://123.207.164.148:1997"
     private val ti = TokenInterceptor("")
     private val headers = Headers.Builder()
             .add("Origin", server)
@@ -55,4 +55,5 @@ object RecipieRetrofit {
     private inline fun <reified T> create(): T = retrofit.create<T>(T::class.java)
 
     val auth by lazy { create<AuthAPI>() }
+    val recipe by lazy { create<RecipeAPI>() }
 }

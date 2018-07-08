@@ -21,7 +21,7 @@ fun <T> Flowable<T>.prepare(context: Context, onError: () -> Unit = {}): Flowabl
 fun handleThrowable(throwable: Throwable, context: Context) {
     when (throwable) {
         is HttpException -> {
-            context.toast("Please contact WildHunter as soon as possible.")
+            context.toast("${throwable.code()} ${throwable.message()}\n${throwable.response().errorBody()?.string()}\nPlease contact WildHunter as soon as possible.")
         }
         is IOException -> {
             context.toast("Network error")
