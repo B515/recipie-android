@@ -18,7 +18,7 @@ class EditInfoFragment : Fragment() {
         view.apply {
             back.setOnClickListener { activity?.onBackPressed() }
             confirm.setOnClickListener {
-                RecipieRetrofit.auth.updateUserInfo()
+                RecipieRetrofit.auth.updateUserInfo(name.text.toString(), 0)
                 activity?.toast("修改完成！")
                 activity?.onBackPressed()
             }
