@@ -27,4 +27,11 @@
         android:orderInCategory="3"
         android:title="收藏夹"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/passwordFragment"
+        android:icon="@drawable/ic_lock_fill"
+        android:orderInCategory="3"
+        android:title="修改密码"
+        app:showAsAction="ifRoom" />
+
 </menu>

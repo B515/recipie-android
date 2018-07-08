@@ -5,6 +5,8 @@
     <string name="input_hint">输入消息</string>
 
     <string name="username">用户名</string>
+    <string name="old_psd">旧密码</string>
+    <string name="new_psd">新密码</string>
     <string name="psd">密码</string>
     <string name="psd_again">再次输入密码</string>
     <string name="register">注册</string>
@@ -24,4 +26,11 @@
     <string name="comment">评论</string>
     <string name="edit_comment">撰写评论&#8230;</string>
     <string name="delete">删除</string>
+
+    <string name="edit_info">修改信息</string>
+    <string name="nickname">昵称</string>
+    <string name="gender">性别</string>
+
+    <string name="confirm">确认</string>
+    <string name="choose">请选择</string>
 </resources>

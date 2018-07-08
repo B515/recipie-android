@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.Navigation
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.fragment_user_info.view.*
 import xin.z7workbench.recipie.R
@@ -18,6 +19,8 @@ class UserInfoFragment: Fragment() {
             unfollow.visibility = View.GONE
             follow.visibility = View.GONE
             chat.visibility = View.GONE
+
+            editor.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.action_userInfoFragment_to_editInfoFragment))
         }
         return view
     }
