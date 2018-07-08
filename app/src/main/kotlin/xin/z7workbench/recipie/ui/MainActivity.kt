@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity() {
         NavigationUI.setupWithNavController(navigation, findNavController(R.id.nav_host_fragment))
 
         fab.setOnClickListener {
-            startActivity<RecipeActivity>("recipe_id" to 1)
+            startActivity<EditRecipeActivity>()
         }
     }
 
@@ -48,6 +48,10 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.action_chat -> {
             launchChatWithPermissionCheck()
+            true
+        }
+        R.id.action_recipe -> {
+            startActivity<RecipeActivity>("recipe_id" to 1)
             true
         }
         else -> super.onOptionsItemSelected(item)

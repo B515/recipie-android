@@ -13,10 +13,9 @@ import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.layout_recipe_display.view.*
 import kotlinx.android.synthetic.main.layout_recipe_step.view.*
 import xin.z7workbench.recipie.R
+import xin.z7workbench.recipie.entity.RecipeStep
 
 class RecipeDisplayFragment : Fragment() {
-
-    data class RecipeStep(val image: String, val description: String)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.layout_recipe_display, container, false)

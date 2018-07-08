@@ -37,3 +37,5 @@ data class Comment(val id: Int, val recipe: Recipe, val user: UserInfo?, val lik
                    var content: String)
 
 data class Tag(val id: Int, val title: String, val description: String)
+
+data class RecipeStep(val image: String, val description: String)
