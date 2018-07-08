@@ -23,4 +23,5 @@
     <string name="recipe_detail">菜谱详情</string>
     <string name="comment">评论</string>
     <string name="edit_comment">撰写评论&#8230;</string>
+    <string name="delete">删除</string>
 </resources>
