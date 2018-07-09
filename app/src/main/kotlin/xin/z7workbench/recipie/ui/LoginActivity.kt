@@ -16,6 +16,7 @@ import org.jetbrains.anko.toast
 import xin.z7workbench.recipie.R
 import xin.z7workbench.recipie.api.RecipieRetrofit
 import xin.z7workbench.recipie.api.prepare
+import xin.z7workbench.recipie.entity.Token
 
 class LoginActivity : AppCompatActivity() {
 
@@ -25,6 +26,8 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         Glide.with(this).load(R.drawable.login_bg).into(bg)
+
+        if (defaultSharedPreferences.getString("token", "") != "") go()
         username.setText(defaultSharedPreferences.getString("username", ""))
         password.setText(defaultSharedPreferences.getString("password", ""))
         login.setOnClickListener {
@@ -32,14 +35,11 @@ class LoginActivity : AppCompatActivity() {
                     .putString("username", username.text.toString())
                     .putString("password", password.text.toString())
                     .apply()
-            RecipieRetrofit.auth.login(username.text.toString(), "", password.text.toString())
-                    .prepare(this).subscribe {
-                        toast(it.token)
-                        defaultSharedPreferences.edit { putString("token", it.token) }
-                        RecipieRetrofit.loadToken(it.token)
-                    }
-            startActivity<MainActivity>()
-            finish()
+            RecipieRetrofit.auth.login(username.text.toString(), password.text.toString()).prepare(this).subscribe {
+                toast("登录成功")
+                save(it)
+                go()
+            }
         }
         register.setOnClickListener {
             register_layout.visibility = View.VISIBLE
@@ -54,11 +54,13 @@ class LoginActivity : AppCompatActivity() {
                 putString("username", username1.text.toString())
                 putString("password", password1.text.toString())
             }
-            RecipieRetrofit.auth.register(username1.text.toString(), "", password1.text.toString(), password1.text.toString())
-                    .prepare(this).subscribe {
-                        startActivity<MainActivity>()
-                        finish()
-                    }
+            RecipieRetrofit.auth.register(username1.text.toString(), password1.text.toString(), password1.text.toString()).prepare(this).subscribe {
+                save(it)
+                RecipieRetrofit.auth.createUserInfo(username1.text.toString(), 0, "nothing").prepare(this).subscribe {
+                    toast("注册成功")
+                    go()
+                }
+            }
         }
         changeip.setOnClickListener {
             val b = AlertDialog.Builder(this)
@@ -73,6 +75,16 @@ class LoginActivity : AppCompatActivity() {
             }
             b.create().show()
         }
+    }
+
+    private fun save(token: Token) {
+        defaultSharedPreferences.edit { putString("token", token.key) }
+        RecipieRetrofit.loadToken(token.key)
+    }
+
+    private fun go() {
+        startActivity<MainActivity>()
+        finish()
     }
 
     private fun back() {
