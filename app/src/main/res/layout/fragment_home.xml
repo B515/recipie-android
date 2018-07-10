@@ -17,9 +17,11 @@
                 android:id="@+id/search_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/colorPrimaryLight"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
                 android:orientation="horizontal"
                 android:padding="6dp"
-                android:background="@color/colorPrimaryLight"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <ImageView

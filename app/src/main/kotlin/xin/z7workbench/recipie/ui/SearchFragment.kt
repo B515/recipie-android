@@ -8,37 +8,33 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.item_histories.view.*
 import kotlinx.android.synthetic.main.item_recipe.view.*
 import kotlinx.android.synthetic.main.layout_search.view.*
 import org.jetbrains.anko.defaultSharedPreferences
+import org.jetbrains.anko.toast
 import xin.z7workbench.recipie.R
 import xin.z7workbench.recipie.api.RecipieRetrofit
 import xin.z7workbench.recipie.api.prepare
 import xin.z7workbench.recipie.entity.Recipe
 
 class SearchFragment : Fragment() {
+    lateinit var v: View
+    lateinit var historyAdapter: HistoryAdapter
+    lateinit var searchResultAdapter: SearchResultAdapter
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.layout_search, container, false)
-        val historyAdapter = HistoryAdapter(requireActivity().defaultSharedPreferences.getStringSet("history", setOf()).toMutableList())
-        val llm = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        v = inflater.inflate(R.layout.layout_search, container, false)
 
-        val searchResultAdapter = SearchResultAdapter()
+        historyAdapter = HistoryAdapter(requireActivity().defaultSharedPreferences.getStringSet("history", setOf()).toMutableList())
+        searchResultAdapter = SearchResultAdapter()
 
-        view.apply {
+        v.apply {
             back.setOnClickListener { activity?.onBackPressed() }
 
-            histories.apply {
-                layoutManager = llm
-                adapter = historyAdapter
-            }
-
-            result.apply {
-                layoutManager = llm
-                adapter = searchResultAdapter
-            }
+            histories.adapter = historyAdapter
+            result.adapter = searchResultAdapter
 
             keyword.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
@@ -53,17 +49,7 @@ class SearchFragment : Fragment() {
                 override fun afterTextChanged(editable: Editable) {}
             })
 
-            fun doSearch(keyword: String) {
-                val historyList = requireActivity().defaultSharedPreferences.getStringSet("history", setOf()).toMutableList()
-                historyList.add(keyword)
-                activity!!.defaultSharedPreferences.edit().putStringSet("history", historyList.toSet()).apply()
-                RecipieRetrofit.recipe.searchByKeyword(keyword).prepare(context!!).subscribe {
-                    history_layout.visibility = View.GONE
 
-                    searchResultAdapter.list = it
-                    searchResultAdapter.notifyDataSetChanged()
-                }
-            }
 
             keyword.setOnEditorActionListener { _, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
@@ -74,12 +60,24 @@ class SearchFragment : Fragment() {
         }
 
 
-        return view
+        return v
 
     }
 
+    private fun doSearch(keyword: String) {
+        val historyList = requireActivity().defaultSharedPreferences.getStringSet("history", setOf()).toMutableList()
+        historyList.add(keyword)
+        activity!!.defaultSharedPreferences.edit().putStringSet("history", historyList.toSet()).apply()
+        RecipieRetrofit.recipe.searchByKeyword(keyword).prepare(context!!).subscribe {
+            v.history_layout.visibility = View.GONE
 
-    class HistoryAdapter(val list: MutableList<String>) : RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder>() {
+            searchResultAdapter.list = it
+            if (it.isEmpty()) requireActivity().toast(R.string.no_result)
+            searchResultAdapter.notifyDataSetChanged()
+        }
+    }
+
+    inner class HistoryAdapter(val list: MutableList<String>) : RecyclerView.Adapter<HistoryViewHolder>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
                 HistoryViewHolder(LayoutInflater.from(parent.context)
                         .inflate(R.layout.item_histories, parent, false))
@@ -94,11 +92,15 @@ class SearchFragment : Fragment() {
                     context.defaultSharedPreferences.edit().putStringSet("history", list.toSet()).apply()
                     notifyDataSetChanged()
                 }
+                text.setOnClickListener {
+                    v.keyword.setText(list[position])
+                    doSearch(list[position])
+                }
             }
         }
 
-        class HistoryViewHolder(val v: View) : RecyclerView.ViewHolder(v)
     }
+    class HistoryViewHolder(val v: View) : RecyclerView.ViewHolder(v)
 
     class SearchResultAdapter(var list: List<Recipe> = listOf()) : RecyclerView.Adapter<SearchResultAdapter.SearchResultViewHolder>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
