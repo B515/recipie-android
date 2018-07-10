@@ -1,9 +1,7 @@
 package xin.z7workbench.recipie.ui
 
-import android.Manifest
 import android.app.Activity
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -27,7 +25,6 @@ import xin.z7workbench.recipie.util.MatisseUtil
 class EditInfoFragment : Fragment() {
     var uris = listOf<Uri>()
     private val REQUEST_CODE = 1
-    private val ASK_PERMISSION = 2
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val view = inflater.inflate(R.layout.layout_edit_info, container, false)
@@ -47,12 +44,7 @@ class EditInfoFragment : Fragment() {
 
                 Glide.with(this).load(R.drawable.login_bg).into(avatar)
                 avatar.setOnClickListener {
-                    val hasPermission = requireActivity().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-                    if (hasPermission != PackageManager.PERMISSION_GRANTED) {
-                        requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), ASK_PERMISSION)
-                        return@setOnClickListener
-                    }
-                    MatisseUtil.selectFromFragment(this@EditInfoFragment, 1, REQUEST_CODE)
+                    MatisseUtil.select(this@EditInfoFragment, 1, REQUEST_CODE)
                 }
 
                 confirm.setOnClickListener {
