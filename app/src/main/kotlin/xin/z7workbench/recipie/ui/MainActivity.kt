@@ -6,6 +6,9 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.bumptech.glide.Glide
@@ -15,6 +18,9 @@ import org.jetbrains.anko.startActivity
 import permissions.dispatcher.NeedsPermission
 import permissions.dispatcher.RuntimePermissions
 import xin.z7workbench.recipie.R
+import xin.z7workbench.recipie.api.RecipieRetrofit
+import xin.z7workbench.recipie.api.prepare
+import xin.z7workbench.recipie.entity.UserInfo
 import xin.z7workbench.recipie.ui.chat.ChatActivity
 
 @RuntimePermissions
@@ -32,6 +38,12 @@ class MainActivity : AppCompatActivity() {
         fab.setOnClickListener {
             startActivity<EditRecipeActivity>()
         }
+        updateUserInfo()
+    }
+
+    fun updateUserInfo() {
+        val viewModel = ViewModelProviders.of(this)[UserInfoViewModel::class.java]
+        RecipieRetrofit.auth.getMyUserInfo().prepare(this).subscribe { viewModel.userInfo.value = it }
     }
 
     @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -61,4 +73,8 @@ class MainActivity : AppCompatActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         onRequestPermissionsResult(requestCode, grantResults)
     }
+}
+
+class UserInfoViewModel : ViewModel() {
+    val userInfo: MutableLiveData<UserInfo?> = MutableLiveData()
 }

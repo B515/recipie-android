@@ -1,6 +1,13 @@
 package xin.z7workbench.recipie.api
 
 import android.content.Context
+import com.google.gson.Gson
+import com.google.gson.JsonSyntaxException
+import com.google.gson.TypeAdapter
+import com.google.gson.TypeAdapterFactory
+import com.google.gson.reflect.TypeToken
+import com.google.gson.stream.JsonReader
+import com.google.gson.stream.JsonWriter
 import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -31,4 +38,25 @@ fun handleThrowable(throwable: Throwable, context: Context) {
         }
     }
     throwable.printStackTrace()
+}
+
+class PrimaryKeyToNull : TypeAdapterFactory {
+    override fun <T> create(gson: Gson, type: TypeToken<T>): TypeAdapter<T> {
+        val delegate = gson.getDelegateAdapter(this, type)
+
+        return object : TypeAdapter<T>() {
+            @Throws(IOException::class)
+            override fun write(out: JsonWriter, value: T) = delegate.write(out, value)
+
+            @Throws(IOException::class)
+            override fun read(i: JsonReader): T? {
+                return try {
+                    delegate.read(i)
+                } catch (e: JsonSyntaxException) {
+                    gson.getAdapter(Int::class.java).read(i)
+                    null
+                }
+            }
+        }
+    }
 }

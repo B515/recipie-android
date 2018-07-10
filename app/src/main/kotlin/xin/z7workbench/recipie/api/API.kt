@@ -10,11 +10,11 @@ import xin.z7workbench.recipie.entity.UserInfo
 interface AuthAPI {
     @FormUrlEncoded
     @POST("/auth/login/")
-    fun login(@Field("username") username: String, @Field("email") email: String, @Field("password") password: String): Flowable<Token>
+    fun login(@Field("username") username: String, @Field("password") password: String): Flowable<Token>
 
     @FormUrlEncoded
     @POST("/auth/registration/")
-    fun register(@Field("username") username: String, @Field("email") email: String, @Field("password1") password1: String, @Field("password2") password2: String): Flowable<Token>
+    fun register(@Field("username") username: String, @Field("password1") password1: String, @Field("password2") password2: String): Flowable<Token>
 
     @FormUrlEncoded
     @POST("/auth/password/change/")
@@ -22,21 +22,27 @@ interface AuthAPI {
 
     @FormUrlEncoded
     @POST("/api/users/")
-    fun createUserInfo(@Field("nickname") nickname: String, @Field("gender") gender: Int, @Field("avatar") avatar: String, @Field("user") user: Int): Flowable<UserInfo>
+    fun createUserInfo(@Field("nickname") nickname: String, @Field("gender") gender: Int, @Field("avatar") avatar: String): Flowable<UserInfo>
 
     @FormUrlEncoded
-    @POST("/")
-    fun updateUserInfo(@Field("nickname") nickname: String, @Field("gender") gender: Int): Flowable<UserInfo>
+    @POST("/api/users/update_me/")
+    fun updateMyUserInfo(@Field("nickname") nickname: String, @Field("gender") gender: Int, @Field("avatar") avatar: String): Flowable<UserInfo>
+
+    @GET("/api/users/me/")
+    fun getMyUserInfo(): Flowable<UserInfo>
+
+    @GET("/api/users/{id}/")
+    fun getUserInfo(@Path("id") id: Int): Flowable<UserInfo>
 }
 
 interface RecipeAPI {
     @FormUrlEncoded
     @POST("/api/recipes/")
-    fun createRecipe(@Field("title") title: String, @Field("content") content: String): Flowable<Recipe>
+    fun createRecipe(@Field("title") title: String, @Field("content") content: String, @Field("description") description: String, @Field("tag") tags: String): Flowable<Recipe>
 
     @FormUrlEncoded
     @PATCH("/api/recipes/{id}/")
-    fun updateRecipe(@Path("id") id: Int, @Field("title") title: String, @Field("content") content: String): Flowable<Recipe>
+    fun updateRecipe(@Path("id") id: Int, @Field("title") title: String, @Field("content") content: String, @Field("description") description: String, @Field("tag") tags: String): Flowable<Recipe>
 
     @GET("/api/recipes/{id}/")
     fun getRecipe(@Path("id") id: Int): Flowable<Recipe>
@@ -58,6 +64,6 @@ interface RecipeAPI {
     fun uncollectRecipe(@Field("id") id: Int): Flowable<String>
 
     @FormUrlEncoded
-    @POST("/")
-    fun createComment(@Field("id") id: Int, @Field("content") content: String): Flowable<Comment>
+    @POST("/api/comments/")
+    fun createComment(@Field("recipe") id: Int, @Field("content") content: String): Flowable<Comment>
 }

@@ -17,9 +17,7 @@ class HomeFragment : Fragment() {
 
         val peopleAdapter = PeopleAdapter()
         val llm = object : LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false) {
-            override fun canScrollVertically(): Boolean {
-                return false
-            }
+            override fun canScrollVertically() = false
         }
 
         view.apply {

@@ -18,9 +18,7 @@ object RecipieRetrofit {
             .add("Accept-Encoding", "gzip, deflate")
             .build()
     val gson: Gson by lazy {
-        GsonBuilder()
-                //.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-                //.setDateFormat("yyyy-MM-dd' 'HH:mm:ss")
+        GsonBuilder().registerTypeAdapterFactory(PrimaryKeyToNull())
                 .create()
     }
     private val client = OkHttpClient.Builder()
