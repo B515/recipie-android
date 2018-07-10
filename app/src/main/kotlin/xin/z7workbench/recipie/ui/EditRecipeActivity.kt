@@ -1,9 +1,7 @@
 package xin.z7workbench.recipie.ui
 
-import android.Manifest
 import android.app.Activity
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
@@ -60,8 +58,6 @@ class EditRecipeActivity : AppCompatActivity() {
                 override fun areContentsTheSame(oldItem: RecipeStep, newItem: RecipeStep) = oldItem == newItem
             }
     ) {
-        // Recipes Types
-        private val ASK_PERMISSION = 2
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecipesViewHolder =
                 RecipesViewHolder(LayoutInflater.from(parent.context)
@@ -75,12 +71,7 @@ class EditRecipeActivity : AppCompatActivity() {
                     submitList(list)
                 }
                 pic.setOnClickListener {
-                    val hasPermission = checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-                    if (hasPermission != PackageManager.PERMISSION_GRANTED) {
-                        requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), ASK_PERMISSION)
-                        return@setOnClickListener
-                    }
-                    MatisseUtil.selectFromActivity(this@EditRecipeActivity, 1, holder.adapterPosition)
+                    MatisseUtil.select(this@EditRecipeActivity, 1, holder.adapterPosition)
                 }
             }
         }

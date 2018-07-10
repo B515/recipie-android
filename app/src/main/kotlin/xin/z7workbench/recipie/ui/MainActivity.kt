@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
         NavigationUI.setupWithNavController(navigation, findNavController(R.id.nav_host_fragment))
 
         fab.setOnClickListener {
-            startActivity<EditRecipeActivity>()
+            editRecipeWithPermissionCheck()
         }
         updateUserInfo()
     }
@@ -47,9 +47,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-    fun launchChat() {
-        startActivity<ChatActivity>()
-    }
+    fun editRecipe() = startActivity<EditRecipeActivity>()
+
+    @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    fun launchChat() = startActivity<ChatActivity>()
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
