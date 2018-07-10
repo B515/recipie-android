@@ -38,6 +38,8 @@ data class Recipe(val id: Int, var title: String, var description: String, var c
 data class Comment(val id: Int, val recipe: Recipe?, val user: UserInfo?, val like_count: Int,
                    var content: String)
 
-data class Tag(val id: Int, val title: String, val description: String)
+data class Tag(val id: Int, val title: String, val description: String, val recipe_set: List<Recipe>?)
 
 data class RecipeStep(val image: String, val description: String)
+
+data class File(val id: Int, val file: String, val owner: Int)

@@ -2,10 +2,7 @@ package xin.z7workbench.recipie.api
 
 import io.reactivex.Flowable
 import retrofit2.http.*
-import xin.z7workbench.recipie.entity.Comment
-import xin.z7workbench.recipie.entity.Recipe
-import xin.z7workbench.recipie.entity.Token
-import xin.z7workbench.recipie.entity.UserInfo
+import xin.z7workbench.recipie.entity.*
 
 interface AuthAPI {
     @FormUrlEncoded
@@ -38,7 +35,7 @@ interface AuthAPI {
 interface RecipeAPI {
     @FormUrlEncoded
     @POST("/api/recipes/")
-    fun createRecipe(@Field("title") title: String, @Field("content") content: String, @Field("description") description: String, @Field("tag") tags: String): Flowable<Recipe>
+    fun createRecipe(@Field("title") title: String, @Field("content") content: String, @Field("description") description: String, @Field("tag") tags: String, @Field("create_by") create_by: Int = 1): Flowable<Recipe>
 
     @FormUrlEncoded
     @PATCH("/api/recipes/{id}/")
@@ -46,6 +43,9 @@ interface RecipeAPI {
 
     @GET("/api/recipes/{id}/")
     fun getRecipe(@Path("id") id: Int): Flowable<Recipe>
+
+    @GET("/api/recipes/search_by_keyword/")
+    fun searchByKeyword(@Query("keyword") keyword: String): Flowable<List<Recipe>>
 
     @FormUrlEncoded
     @POST("/")
@@ -65,5 +65,9 @@ interface RecipeAPI {
 
     @FormUrlEncoded
     @POST("/api/comments/")
-    fun createComment(@Field("recipe") id: Int, @Field("content") content: String): Flowable<Comment>
+    fun createComment(@Field("recipe") id: Int, @Field("content") content: String, @Field("userinfo") userinfo: Int = 1): Flowable<Comment>
+
+    @Multipart
+    @POST("/api/files/")
+    fun uploadFile(): Flowable<File>
 }
