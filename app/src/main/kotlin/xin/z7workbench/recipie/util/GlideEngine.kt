@@ -10,7 +10,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.zhihu.matisse.engine.ImageEngine
 
 class GlideEngine : ImageEngine {
-    override fun loadAnimatedGifThumbnail(context: Context, resize: Int, placeholder: Drawable, imageView: ImageView, uri: Uri?) {
+    override fun loadGifThumbnail(context: Context, resize: Int, placeholder: Drawable, imageView: ImageView, uri: Uri) {
         val options = RequestOptions().placeholder(placeholder).override(resize, resize).priority(Priority.HIGH)
         Glide.with(context)
                 .asGif()
@@ -19,7 +19,7 @@ class GlideEngine : ImageEngine {
                 .into(imageView)
     }
 
-    override fun loadAnimatedGifImage(context: Context, resizeX: Int, resizeY: Int, imageView: ImageView, uri: Uri?) {
+    override fun loadGifImage(context: Context, resizeX: Int, resizeY: Int, imageView: ImageView, uri: Uri) {
         val options = RequestOptions().override(resizeX, resizeY).priority(Priority.HIGH)
         Glide.with(context)
                 .asGif()

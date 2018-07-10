@@ -14,7 +14,7 @@ object MatisseUtil {
 
     fun select(from: Activity, num: Int, forResult: Int) {
         Matisse.from(from)
-                .choose(MimeType.allOf())
+                .choose(MimeType.ofAll())
                 .countable(true)
                 .capture(false)
                 .captureStrategy(CaptureStrategy(true, BuildConfig.APPLICATION_ID + ".fileprovider"))
