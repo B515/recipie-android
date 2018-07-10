@@ -64,11 +64,11 @@ interface RecipeAPI {
     fun unlikeRecipe(@Field("id") id: Int): Flowable<String>
 
     @FormUrlEncoded
-    @POST("/api/users/{id}/follow/")
+    @POST("/api/recipes/{id}/collect/")
     fun collectRecipe(@Path("id") id: Int): Flowable<Result>
 
     @FormUrlEncoded
-    @POST("/api/users/{id}/unfollow/")
+    @POST("/api/recipes/{id}/uncollect/")
     fun uncollectRecipe(@Path("id") id: Int): Flowable<Result>
 
     @FormUrlEncoded
