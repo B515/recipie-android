@@ -51,6 +51,9 @@ interface RecipeAPI {
     @PATCH("/api/recipes/{id}/")
     fun updateRecipe(@Path("id") id: Int, @Field("title") title: String, @Field("content") content: String, @Field("description") description: String, @Field("tag") tags: String): Flowable<Recipe>
 
+    @GET("/api/recipes/")
+    fun getAllRecipes(): Flowable<List<Recipe>>
+
     @GET("/api/recipes/{id}/")
     fun getRecipe(@Path("id") id: Int): Flowable<Recipe>
 
@@ -72,6 +75,9 @@ interface RecipeAPI {
     @FormUrlEncoded
     @POST("/api/recipes/{id}/uncollect/")
     fun uncollectRecipe(@Path("id") id: Int): Flowable<Result>
+
+    @GET("/api/tags/")
+    fun getAllTags(): Flowable<List<Tag>>
 
     @FormUrlEncoded
     @POST("/api/comments/")
