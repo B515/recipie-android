@@ -14,8 +14,7 @@ object RecipieRetrofit {
     private val ti = TokenInterceptor("")
     private val headers = Headers.Builder()
             .add("Origin", server)
-            .add("Accept", "application/json, text/javascript, */*; q=0.01")
-            .add("Accept-Encoding", "gzip, deflate")
+            .add("Accept", "application/json")
             .build()
     val gson: Gson by lazy {
         GsonBuilder().registerTypeAdapterFactory(PrimaryKeyToNull())

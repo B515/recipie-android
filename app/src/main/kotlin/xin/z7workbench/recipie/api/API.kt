@@ -40,6 +40,9 @@ interface AuthAPI {
     @FormUrlEncoded
     @POST("/api/users/{id}/unfollow/")
     fun unfollow(@Path("id") id: Int): Flowable<Result>
+
+    @GET("/api/users/followers/")
+    fun getMyFollowers():Flowable<List<UserInfo>>
 }
 
 interface RecipeAPI {
