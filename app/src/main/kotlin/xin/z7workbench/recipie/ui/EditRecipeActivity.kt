@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.app_bar.*
 import kotlinx.android.synthetic.main.item_edit_recipe.view.*
 import xin.z7workbench.recipie.R
 import xin.z7workbench.recipie.entity.RecipeStep
-import xin.z7workbench.recipie.util.MatisseUtil
+import xin.z7workbench.recipie.util.MatisseUtil.select
 
 class EditRecipeActivity : AppCompatActivity() {
 
@@ -71,7 +71,7 @@ class EditRecipeActivity : AppCompatActivity() {
                     submitList(list)
                 }
                 pic.setOnClickListener {
-                    MatisseUtil.select(this@EditRecipeActivity, 1, holder.adapterPosition)
+                    Matisse.from(this@EditRecipeActivity).select(1, holder.adapterPosition)
                 }
             }
         }

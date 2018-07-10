@@ -8,6 +8,11 @@ import android.net.Uri
 import android.os.Environment
 import android.provider.DocumentsContract
 import android.provider.MediaStore
+import io.reactivex.Flowable
+import okhttp3.MediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import xin.z7workbench.recipie.api.RecipieRetrofit
 import java.io.File
 
 fun getAbsolutePath(id: Int, name: String): String {
@@ -147,3 +152,11 @@ fun getDataColumn(context: Context, uri: Uri?, selection: String?, selectionArgs
 fun isExternalStorageDocument(uri: Uri) = "com.android.externalstorage.documents" == uri.authority
 fun isDownloadsDocument(uri: Uri) = "com.android.providers.downloads.documents" == uri.authority
 fun isMediaDocument(uri: Uri) = "com.android.providers.media.documents" == uri.authority
+
+fun uploadRequest(uri: Uri, context: Context): Flowable<xin.z7workbench.recipie.entity.File> {
+    val file = File(getPath(context, uri))
+    val requestFile = RequestBody.create(MediaType.parse(context.contentResolver.getType(uri)), file)
+    val body = MultipartBody.Part.createFormData("file", file.name, requestFile)
+    val owner = RequestBody.create(okhttp3.MultipartBody.FORM, "1")
+    return RecipieRetrofit.recipe.uploadFile(owner, body)
+}

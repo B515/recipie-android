@@ -1,6 +1,8 @@
 package xin.z7workbench.recipie.api
 
 import io.reactivex.Flowable
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.http.*
 import xin.z7workbench.recipie.entity.*
 
@@ -77,5 +79,5 @@ interface RecipeAPI {
 
     @Multipart
     @POST("/api/files/")
-    fun uploadFile(): Flowable<File>
+    fun uploadFile(@Part("owner") owner: RequestBody, @Part file: MultipartBody.Part): Flowable<File>
 }
