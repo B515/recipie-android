@@ -25,13 +25,14 @@ import xin.z7workbench.recipie.util.MatisseUtil
 class EditInfoFragment : Fragment() {
     var uris = listOf<Uri>()
     private val REQUEST_CODE = 1
+    lateinit var v: View
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        val view = inflater.inflate(R.layout.layout_edit_info, container, false)
+        v = inflater.inflate(R.layout.layout_edit_info, container, false)
         val model = ViewModelProviders.of(requireActivity())[UserInfoViewModel::class.java]
         model.userInfo.observe(this, Observer { user ->
             user ?: return@Observer
-            view.apply {
+            v.apply {
                 name.setText(user.nickname)
                 val genders = listOf("男", "女")
                 gender.text = genders[user.gender]
@@ -58,7 +59,7 @@ class EditInfoFragment : Fragment() {
                 back.setOnClickListener { requireActivity().onBackPressed() }
             }
         })
-        return view
+        return v
     }
 
 
@@ -71,7 +72,7 @@ class EditInfoFragment : Fragment() {
                     .load(Matisse.obtainResult(data)[0].toString())
                     .transition(DrawableTransitionOptions.withCrossFade())
                     .apply(RequestOptions.circleCropTransform())
-                    .into(view!!.avatar)
+                    .into(v.avatar)
         }
     }
 }
