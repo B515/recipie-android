@@ -30,7 +30,7 @@ object RecipieRetrofit {
                 private val cookieStore = HashMap<String, List<Cookie>>()
 
                 override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {
-                    cookieStore.put(url.host(), cookies)
+                    cookieStore[url.host()] = cookies
                 }
 
                 override fun loadForRequest(url: HttpUrl): List<Cookie> {

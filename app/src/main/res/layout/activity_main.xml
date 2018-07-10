@@ -18,6 +18,7 @@
             app:navGraph="@navigation/nav_main" />
 
         <com.google.android.material.bottomappbar.BottomAppBar
+            style="@style/Widget.MaterialComponents.BottomAppBar"
             android:id="@+id/bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -28,6 +29,7 @@
             app:fabCradleMargin="10dp"
             app:fabCradleRoundedCornerRadius="10dp"
             app:fabCradleVerticalOffset="5dp"
+            app:backgroundTint="@color/colorPrimary"
             app:navigationIcon="@drawable/ic_other">
 
         </com.google.android.material.bottomappbar.BottomAppBar>

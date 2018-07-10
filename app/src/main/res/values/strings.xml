@@ -33,4 +33,6 @@
 
     <string name="confirm">确认</string>
     <string name="choose">请选择</string>
+    <string name="search">搜索</string>
+    <string name="search_hint">搜索&#8230;</string>
 </resources>
