@@ -30,6 +30,14 @@ interface AuthAPI {
 
     @GET("/api/users/{id}/")
     fun getUserInfo(@Path("id") id: Int): Flowable<UserInfo>
+
+    @FormUrlEncoded
+    @POST("/api/users/{id}/follow/")
+    fun follow(@Path("id") id: Int): Flowable<Result>
+
+    @FormUrlEncoded
+    @POST("/api/users/{id}/unfollow/")
+    fun unfollow(@Path("id") id: Int): Flowable<Result>
 }
 
 interface RecipeAPI {
@@ -56,12 +64,12 @@ interface RecipeAPI {
     fun unlikeRecipe(@Field("id") id: Int): Flowable<String>
 
     @FormUrlEncoded
-    @POST("/")
-    fun collectRecipe(@Field("id") id: Int): Flowable<String>
+    @POST("/api/users/{id}/follow/")
+    fun collectRecipe(@Path("id") id: Int): Flowable<Result>
 
     @FormUrlEncoded
-    @POST("/")
-    fun uncollectRecipe(@Field("id") id: Int): Flowable<String>
+    @POST("/api/users/{id}/unfollow/")
+    fun uncollectRecipe(@Path("id") id: Int): Flowable<Result>
 
     @FormUrlEncoded
     @POST("/api/comments/")
