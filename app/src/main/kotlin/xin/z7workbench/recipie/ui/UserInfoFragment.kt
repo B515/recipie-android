@@ -19,6 +19,7 @@ class UserInfoFragment : Fragment() {
         model.userInfo.observe(this, Observer {
             it ?: return@Observer
             view.username.text = it.nickname
+            Glide.with(this).load(it.avatar).into(view.avatar)
         })
         view.apply {
             Glide.with(this).load(R.drawable.login_bg).into(bg)

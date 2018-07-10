@@ -18,5 +18,9 @@
     <style name="AppTheme.Matisse" parent="Matisse.Zhihu">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="toolbar">@style/AppTheme.AppBarOverlay</item>
+        <item name="bottomToolbar.apply.textColor">@color/colorAccent</item>
+        <item name="item.checkCircle.backgroundColor">@color/colorAccent</item>
+        <item name="preview.bottomToolbar.apply.textColor">@color/colorAccent</item>
     </style>
 </resources>

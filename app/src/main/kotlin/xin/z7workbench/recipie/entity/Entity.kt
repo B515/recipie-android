@@ -43,3 +43,5 @@ data class Tag(val id: Int, val title: String, val description: String, val reci
 data class RecipeStep(val image: String, val description: String)
 
 data class File(val id: Int, val file: String, val owner: Int)
+
+data class Result(val success: Boolean)

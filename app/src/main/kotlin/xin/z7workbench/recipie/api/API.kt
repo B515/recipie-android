@@ -1,6 +1,8 @@
 package xin.z7workbench.recipie.api
 
 import io.reactivex.Flowable
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.http.*
 import xin.z7workbench.recipie.entity.*
 
@@ -30,6 +32,14 @@ interface AuthAPI {
 
     @GET("/api/users/{id}/")
     fun getUserInfo(@Path("id") id: Int): Flowable<UserInfo>
+
+    @FormUrlEncoded
+    @POST("/api/users/{id}/follow/")
+    fun follow(@Path("id") id: Int): Flowable<Result>
+
+    @FormUrlEncoded
+    @POST("/api/users/{id}/unfollow/")
+    fun unfollow(@Path("id") id: Int): Flowable<Result>
 }
 
 interface RecipeAPI {
@@ -40,6 +50,9 @@ interface RecipeAPI {
     @FormUrlEncoded
     @PATCH("/api/recipes/{id}/")
     fun updateRecipe(@Path("id") id: Int, @Field("title") title: String, @Field("content") content: String, @Field("description") description: String, @Field("tag") tags: String): Flowable<Recipe>
+
+    @GET("/api/recipes/")
+    fun getAllRecipes(): Flowable<List<Recipe>>
 
     @GET("/api/recipes/{id}/")
     fun getRecipe(@Path("id") id: Int): Flowable<Recipe>
@@ -56,12 +69,15 @@ interface RecipeAPI {
     fun unlikeRecipe(@Field("id") id: Int): Flowable<String>
 
     @FormUrlEncoded
-    @POST("/")
-    fun collectRecipe(@Field("id") id: Int): Flowable<String>
+    @POST("/api/recipes/{id}/collect/")
+    fun collectRecipe(@Path("id") id: Int): Flowable<Result>
 
     @FormUrlEncoded
-    @POST("/")
-    fun uncollectRecipe(@Field("id") id: Int): Flowable<String>
+    @POST("/api/recipes/{id}/uncollect/")
+    fun uncollectRecipe(@Path("id") id: Int): Flowable<Result>
+
+    @GET("/api/tags/")
+    fun getAllTags(): Flowable<List<Tag>>
 
     @FormUrlEncoded
     @POST("/api/comments/")
@@ -69,5 +85,5 @@ interface RecipeAPI {
 
     @Multipart
     @POST("/api/files/")
-    fun uploadFile(): Flowable<File>
+    fun uploadFile(@Part("owner") owner: RequestBody, @Part file: MultipartBody.Part): Flowable<File>
 }

@@ -20,41 +20,46 @@ import org.jetbrains.anko.toast
 import xin.z7workbench.recipie.R
 import xin.z7workbench.recipie.api.RecipieRetrofit
 import xin.z7workbench.recipie.api.prepare
-import xin.z7workbench.recipie.util.MatisseUtil
+import xin.z7workbench.recipie.entity.UserInfo
+import xin.z7workbench.recipie.util.MatisseUtil.select
+import xin.z7workbench.recipie.util.uploadRequest
 
 class EditInfoFragment : Fragment() {
     var uris = listOf<Uri>()
     private val REQUEST_CODE = 1
     lateinit var v: View
+    private var avatarChanged = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         v = inflater.inflate(R.layout.layout_edit_info, container, false)
         val model = ViewModelProviders.of(requireActivity())[UserInfoViewModel::class.java]
         model.userInfo.observe(this, Observer { user ->
             user ?: return@Observer
+            val newUser = user.copy()
             v.apply {
                 name.setText(user.nickname)
                 val genders = listOf("男", "女")
                 gender.text = genders[user.gender]
                 gender.setOnClickListener {
                     context.selector(getString(R.string.choose), genders) { _, i ->
-                        user.gender = i
+                        newUser.gender = i
                         gender.text = genders[i]
                     }
                 }
 
-                Glide.with(this).load(R.drawable.login_bg).into(avatar)
+                Glide.with(this).load(user.avatar).into(avatar)
                 avatar.setOnClickListener {
-                    MatisseUtil.select(this@EditInfoFragment, 1, REQUEST_CODE)
+                    Matisse.from(this@EditInfoFragment).select(1, REQUEST_CODE)
                 }
 
                 confirm.setOnClickListener {
-                    // TODO update avatar
-                    RecipieRetrofit.auth.updateMyUserInfo(name.text.toString(), user.gender, "http://www.wildhunter.me/").prepare(context).subscribe {
-                        (requireActivity() as MainActivity).updateUserInfo()
-                        context.toast("修改完成！")
-                        requireActivity().onBackPressed()
-                    }
+                    newUser.nickname = name.text.toString()
+                    if (avatarChanged) {
+                        uploadRequest(uris[0], context).prepare(context).subscribe {
+                            newUser.avatar = it.file
+                            updateMyUserInfo(newUser)
+                        }
+                    } else updateMyUserInfo(newUser)
                 }
                 back.setOnClickListener { requireActivity().onBackPressed() }
             }
@@ -62,7 +67,13 @@ class EditInfoFragment : Fragment() {
         return v
     }
 
-
+    private fun updateMyUserInfo(user: UserInfo) {
+        RecipieRetrofit.auth.updateMyUserInfo(user.nickname, user.gender, user.avatar).prepare(requireContext()).subscribe {
+            (requireActivity() as MainActivity).updateUserInfo()
+            requireContext().toast("修改完成！")
+            requireActivity().onBackPressed()
+        }
+    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -73,6 +84,7 @@ class EditInfoFragment : Fragment() {
                     .transition(DrawableTransitionOptions.withCrossFade())
                     .apply(RequestOptions.circleCropTransform())
                     .into(v.avatar)
+            avatarChanged = true
         }
     }
 }
