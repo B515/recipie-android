@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_home.view.*
@@ -21,6 +22,8 @@ class HomeFragment : Fragment() {
         }
 
         view.apply {
+            search_layout.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.action_homeFragment_to_searchFragment))
+
             people.apply {
                 adapter = peopleAdapter
                 layoutManager = llm

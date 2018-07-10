@@ -13,6 +13,30 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <LinearLayout
+                android:id="@+id/search_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="6dp"
+                android:background="@color/colorPrimaryLight"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_search" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:paddingStart="4dp"
+                    android:text="@string/search_hint"
+                    android:textSize="18sp" />
+
+            </LinearLayout>
+
             <TextView
                 android:id="@+id/textView2"
                 android:layout_width="wrap_content"
@@ -21,7 +45,7 @@
                 android:layout_marginTop="8dp"
                 android:text="为您推荐"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@id/search_layout" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/people"
