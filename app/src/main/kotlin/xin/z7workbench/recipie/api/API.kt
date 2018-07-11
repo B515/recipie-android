@@ -64,12 +64,12 @@ interface RecipeAPI {
     fun searchByKeyword(@Query("keyword") keyword: String): Flowable<List<Recipe>>
 
     @FormUrlEncoded
-    @POST("/")
-    fun likeRecipe(@Field("id") id: Int): Flowable<String>
+    @POST("/api/recipes/{id}/like/")
+    fun likeRecipe(@Field("id") id: Int): Flowable<Result>
 
     @FormUrlEncoded
-    @POST("/")
-    fun unlikeRecipe(@Field("id") id: Int): Flowable<String>
+    @POST("/api/recipes/{id}/unlike/")
+    fun unlikeRecipe(@Field("id") id: Int): Flowable<Result>
 
     @FormUrlEncoded
     @POST("/api/recipes/{id}/collect/")
@@ -85,6 +85,14 @@ interface RecipeAPI {
     @FormUrlEncoded
     @POST("/api/comments/")
     fun createComment(@Field("recipe") id: Int, @Field("content") content: String, @Field("userinfo") userinfo: Int = 1): Flowable<Comment>
+
+    @FormUrlEncoded
+    @POST("/api/comments/{id}/like/")
+    fun likeComment(@Field("id") id: Int): Flowable<Result>
+
+    @FormUrlEncoded
+    @POST("/api/comments/{id}/unlike/")
+    fun unlikeComment(@Field("id") id: Int): Flowable<Result>
 
     @Multipart
     @POST("/api/files/")
