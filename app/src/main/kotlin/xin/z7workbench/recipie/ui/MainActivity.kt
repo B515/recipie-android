@@ -47,6 +47,9 @@ class MainActivity : AppCompatActivity() {
             viewModel.userInfo.value = it
             navigation.getHeaderView(0).username.text = it.nickname ?: "Unknown"
         }
+        RecipieRetrofit.auth.getMyFollowers().prepare(this).subscribe {
+            viewModel.followers.value = it
+        }
     }
 
     @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -81,4 +84,5 @@ class MainActivity : AppCompatActivity() {
 
 class UserInfoViewModel : ViewModel() {
     val userInfo: MutableLiveData<UserInfo?> = MutableLiveData()
+    val followers: MutableLiveData<List<UserInfo>?> = MutableLiveData()
 }
