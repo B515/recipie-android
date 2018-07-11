@@ -32,7 +32,7 @@ data class Token(val key: String)
 data class User(val id: Int, var username: String, var password: String, var email: String?)
 data class UserInfo(val id: Int, val user: User?, var gender: Int, var avatar: String,
                     var nickname: String, val recipe_created: List<Recipe>?, val recipe_collection: List<Recipe>?,
-                    val friends: List<UserInfo>?)
+                    val friends: List<UserInfo>?, val recipe_like: List<Recipe>?, val comment_like: List<Comment>?)
 
 data class Recipe(val id: Int, var title: String, var description: String, var content: String,
                   val create_by: UserInfo?, val comment_set: List<Comment>?, val tag: List<Tag>?,
