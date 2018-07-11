@@ -1,5 +1,7 @@
 package xin.z7workbench.recipie.entity
 
+import android.net.Uri
+
 data class ServerMessage(val Object: String, val ToUser: String, val FromUser: String,
                          val CreateTime: String, val MsgType: String, val Content: String,
                          val OnlineUser: List<String>?)
@@ -41,7 +43,7 @@ data class Comment(val id: Int, val recipe: Recipe?, val user: UserInfo?, val li
 
 data class Tag(val id: Int, val title: String, val description: String, val recipe_set: List<Recipe>?)
 
-data class RecipeStep(val image: String, val description: String)
+data class RecipeStep(var image: String = "", var description: String = "", @Transient var local: Uri = Uri.EMPTY)
 
 data class File(val id: Int, val file: String, val owner: Int)
 

@@ -64,7 +64,7 @@ class MainActivity : AppCompatActivity() {
             true
         }
         R.id.action_recipe -> {
-            startActivity<RecipeActivity>("recipe_id" to 1)
+            startActivity<RecipeActivity>("recipe_id" to 12)
             true
         }
         else -> super.onOptionsItemSelected(item)

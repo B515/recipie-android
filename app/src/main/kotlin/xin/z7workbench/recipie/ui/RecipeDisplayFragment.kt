@@ -10,6 +10,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.viewpager.widget.PagerAdapter
 import com.bumptech.glide.Glide
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.layout_recipe_display.view.*
 import kotlinx.android.synthetic.main.layout_recipe_step.view.*
 import xin.z7workbench.recipie.R
@@ -23,7 +25,7 @@ class RecipeDisplayFragment : Fragment() {
         model.recipe.observe(this, Observer {
             it ?: return@Observer
             view.apply {
-                val steps = listOf(RecipeStep("", "准备"), RecipeStep("", "点火"), RecipeStep("", "爆炸"), RecipeStep("", "成功"))
+                val steps = Gson().fromJson<List<RecipeStep>>(it.content, object : TypeToken<List<RecipeStep>>() {}.type)
                 view_pager.adapter = RecipeAdapter(context!!, steps)
                 indicator.setViewPager(view_pager)
             }
@@ -42,7 +44,7 @@ class RecipeDisplayFragment : Fragment() {
             val step = steps[position]
             layout.step_count.text = "${position + 1} / ${steps.size}"
             layout.description.text = step.description
-            Glide.with(layout).load(R.drawable.login_bg).into(layout.image) //TODO step.image
+            Glide.with(layout).load(step.image).into(layout.image)
             collection.addView(layout)
             return layout
         }
