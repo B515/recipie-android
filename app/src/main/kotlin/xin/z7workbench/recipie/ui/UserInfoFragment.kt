@@ -19,11 +19,19 @@ class UserInfoFragment : Fragment() {
         val model = ViewModelProviders.of(requireActivity())[UserInfoViewModel::class.java]
         model.userInfo.observe(this, Observer {
             it ?: return@Observer
-            view.username.text = it.nickname
-            Glide.with(this).load(it.avatar).apply(RequestOptions.circleCropTransform()).into(view.avatar)
 
-            view.followers.text = "${it.recipe_created?.size ?: 0}个菜谱 ${it.friends?.size
-                    ?: 0}人关注 ${model.followers.value?.size ?: 0}人粉丝"
+            view.apply {
+                username.text = it.nickname
+                Glide.with(this).load(it.avatar).apply(RequestOptions.circleCropTransform()).into(avatar)
+                followers.text = "${it.recipe_created?.size ?: 0}个菜谱 ${it.friends?.size
+                        ?: 0}人关注 ${model.followers.value?.size ?: 0}人粉丝"
+
+                val adapter = SearchFragment.RecipeResultAdapter()
+                recycler.adapter = adapter
+                adapter.list = it.recipe_created ?: listOf()
+                adapter.notifyDataSetChanged()
+            }
+
         })
         view.apply {
             Glide.with(this).load(R.drawable.login_bg).into(bg)
