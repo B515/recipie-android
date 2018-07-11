@@ -73,6 +73,10 @@ interface RecipeAPI {
     @POST("/api/recipes/{id}/uncollect/")
     fun uncollectRecipe(@Path("id") id: Int): Flowable<Result>
 
+    @FormUrlEncoded
+    @POST("/api/tags/")
+    fun createTag(@Field("title") title: String, @Field("description") description: String): Flowable<Tag>
+
     @GET("/api/tags/")
     fun getAllTags(): Flowable<List<Tag>>
 

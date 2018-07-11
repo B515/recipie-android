@@ -8,8 +8,8 @@
     <fragment
         android:id="@+id/homeFragment"
         android:name="xin.z7workbench.recipie.ui.HomeFragment"
-        tools:layout="@layout/fragment_home"
-        android:label="HomeFragment" >
+        android:label="HomeFragment"
+        tools:layout="@layout/fragment_home">
         <action
             android:id="@+id/action_homeFragment_to_searchFragment"
             app:destination="@id/searchFragment"
@@ -21,8 +21,8 @@
     <fragment
         android:id="@+id/userInfoFragment"
         android:name="xin.z7workbench.recipie.ui.UserInfoFragment"
-        tools:layout="@layout/fragment_user_info"
-        android:label="UserInfoFragment" >
+        android:label="UserInfoFragment"
+        tools:layout="@layout/fragment_user_info">
         <action
             android:id="@+id/action_userInfoFragment_to_editInfoFragment"
             app:destination="@id/editInfoFragment"
@@ -34,26 +34,44 @@
     <fragment
         android:id="@+id/followFragment"
         android:name="xin.z7workbench.recipie.ui.FollowFragment"
-        tools:layout="@layout/fragment_recycler"
-        android:label="FollowFragment" />
+        android:label="FollowFragment"
+        tools:layout="@layout/fragment_recycler" />
     <fragment
         android:id="@+id/favoriteFragment"
         android:name="xin.z7workbench.recipie.ui.FavoriteFragment"
-        tools:layout="@layout/fragment_recycler"
-        android:label="FavoriteFragment" />
+        android:label="FavoriteFragment"
+        tools:layout="@layout/fragment_recycler" />
     <fragment
         android:id="@+id/editInfoFragment"
         android:name="xin.z7workbench.recipie.ui.EditInfoFragment"
-        tools:layout="@layout/layout_edit_info"
-        android:label="EditInfoFragment" />
+        android:label="EditInfoFragment"
+        tools:layout="@layout/layout_edit_info" />
     <fragment
         android:id="@+id/passwordFragment"
         android:name="xin.z7workbench.recipie.ui.PasswordFragment"
-        tools:layout="@layout/fragment_password"
-        android:label="PasswordFragment" />
+        android:label="PasswordFragment"
+        tools:layout="@layout/fragment_password" />
     <fragment
         android:id="@+id/searchFragment"
         android:name="xin.z7workbench.recipie.ui.SearchFragment"
-        tools:layout="@layout/layout_search"
-        android:label="SearchFragment" />
+        android:label="SearchFragment"
+        tools:layout="@layout/layout_search" />
+    <fragment
+        android:id="@+id/tagsFragment"
+        android:name="xin.z7workbench.recipie.ui.TagsFragment"
+        android:label="TagsFragment"
+        tools:layout="@layout/layout_tags">
+        <action
+            android:id="@+id/action_tagsFragment_to_tagFragment2"
+            app:destination="@id/tagFragment2"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    </fragment>
+    <fragment
+        android:id="@+id/tagFragment2"
+        android:name="xin.z7workbench.recipie.ui.TagFragment"
+        android:label="TagFragment"
+        tools:layout="@layout/layout_tag" />
 </navigation>

@@ -10,6 +10,13 @@
         app:showAsAction="ifRoom" />
 
     <item
+        android:id="@+id/tagsFragment"
+        android:icon="@drawable/ic_order"
+        android:orderInCategory="1"
+        android:title="标签"
+        app:showAsAction="ifRoom" />
+
+    <item
         android:id="@+id/userInfoFragment"
         android:icon="@drawable/ic_people_fill"
         android:orderInCategory="1"

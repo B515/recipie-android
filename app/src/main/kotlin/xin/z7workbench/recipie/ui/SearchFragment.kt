@@ -103,14 +103,14 @@ class SearchFragment : Fragment() {
     }
     class HistoryViewHolder(val v: View) : RecyclerView.ViewHolder(v)
 
-    class RecipeResultAdapter(var list: List<Recipe> = listOf()) : RecyclerView.Adapter<RecipeResultAdapter.SearchResultViewHolder>() {
+    class RecipeResultAdapter(var list: List<Recipe> = listOf()) : RecyclerView.Adapter<RecipeResultAdapter.RecipeResultViewHolder>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-                SearchResultViewHolder(LayoutInflater.from(parent.context)
+                RecipeResultViewHolder(LayoutInflater.from(parent.context)
                         .inflate(R.layout.item_recipe, parent, false))
 
         override fun getItemCount() = list.size
 
-        override fun onBindViewHolder(holder: SearchResultViewHolder, position: Int) {
+        override fun onBindViewHolder(holder: RecipeResultViewHolder, position: Int) {
             holder.v.apply {
                 title.text = list[position].title
                 like_count.text = "${list[position].like_count}${context.getString(R.string.like_tail)}"
@@ -124,6 +124,6 @@ class SearchFragment : Fragment() {
             }
         }
 
-        class SearchResultViewHolder(val v: View) : RecyclerView.ViewHolder(v)
+        class RecipeResultViewHolder(val v: View) : RecyclerView.ViewHolder(v)
     }
 }
