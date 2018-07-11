@@ -37,6 +37,6 @@
     <string name="search_hint">搜索&#8230;</string>
     <string name="history">历史记录</string>
     <string name="like_tail">人喜欢</string>
-    <string name="read_tail">人阅读过</string>
+    <string name="read_tail">次阅读</string>
     <string name="no_result">可惜没有结果哦~</string>
 </resources>
