@@ -14,6 +14,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.chip.Chip
 import kotlinx.android.synthetic.main.item_comment.view.*
 import kotlinx.android.synthetic.main.layout_recipe_detail.view.*
+import org.jetbrains.anko.defaultSharedPreferences
 import org.jetbrains.anko.toast
 import xin.z7workbench.recipie.R
 import xin.z7workbench.recipie.api.RecipieRetrofit
@@ -49,6 +50,23 @@ class RecipeDetailFragment : Fragment() {
 
                 author.text = recipe.create_by?.nickname ?: "Unknown"
                 likes.text = "${recipe.like_count}${context.getString(R.string.like_tail)} ${recipe.read_count}${context.getString(R.string.read_tail)}"
+
+                val userid = context.defaultSharedPreferences.getInt("userid", 0)
+                if (recipe.recipe_like?.contains(userid) == true) {
+                    like.visibility = View.GONE
+                    not_like.visibility = View.VISIBLE
+                } else {
+                    not_like.visibility = View.GONE
+                    like.visibility = View.VISIBLE
+                }
+                if (recipe.recipe_collection?.contains(userid) == true) {
+                    favorite.visibility = View.GONE
+                    not_favorite.visibility = View.VISIBLE
+                } else {
+                    not_favorite.visibility = View.GONE
+                    favorite.visibility = View.VISIBLE
+                }
+
 
                 like.setOnClickListener {
                     RecipieRetrofit.recipe.likeRecipe(recipe.id).prepare(context).subscribe { context.toast("已点赞") }
@@ -89,6 +107,14 @@ class RecipeDetailFragment : Fragment() {
                 comment_content.text = list[position].content
                 comment_like_count.text = list[position].like_count.toString()
 
+                val userid = context.defaultSharedPreferences.getInt("userid", 0)
+                if (list[position].comment_like?.contains(userid) == true) {
+                    comment_like.visibility = View.GONE
+                    comment_not_like.visibility = View.VISIBLE
+                } else {
+                    comment_not_like.visibility = View.GONE
+                    comment_like.visibility = View.VISIBLE
+                }
                 comment_like.setOnClickListener {
                     RecipieRetrofit.recipe.likeComment(list[position].id).prepare(this@RecipeDetailFragment.requireContext()).subscribe {
                         comment_like.visibility = View.GONE

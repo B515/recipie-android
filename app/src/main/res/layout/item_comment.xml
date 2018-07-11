@@ -66,7 +66,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/author_avatar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/author_avatar"
-            app:srcCompat="@drawable/ic_like_fill" />
+            app:srcCompat="@drawable/ic_like" />
 
         <ImageView
             android:id="@+id/comment_not_like"
@@ -76,7 +76,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/author_avatar"
             app:layout_constraintEnd_toStartOf="@+id/comment_like"
             app:layout_constraintTop_toTopOf="@+id/author_avatar"
-            app:srcCompat="@drawable/ic_like" />
+            app:srcCompat="@drawable/ic_like_fill" />
 
         <TextView
             android:id="@+id/comment_like_count"

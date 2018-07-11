@@ -27,7 +27,10 @@ class PasswordFragment : Fragment() {
                 }
             }
             logout.setOnClickListener {
-                context.defaultSharedPreferences.edit { putString("token", "") }
+                context.defaultSharedPreferences.edit {
+                    putString("token", "")
+                    putString("userid", "")
+                }
                 RecipieRetrofit.loadToken("")
                 context.startActivity<LoginActivity>()
                 requireActivity().finish()

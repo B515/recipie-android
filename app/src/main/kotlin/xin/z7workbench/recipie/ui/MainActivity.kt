@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.edit
 import androidx.core.view.GravityCompat
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -14,6 +15,7 @@ import androidx.navigation.ui.NavigationUI
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.drawer_header.view.*
+import org.jetbrains.anko.defaultSharedPreferences
 import org.jetbrains.anko.startActivity
 import permissions.dispatcher.NeedsPermission
 import permissions.dispatcher.RuntimePermissions
@@ -46,6 +48,7 @@ class MainActivity : AppCompatActivity() {
         RecipieRetrofit.auth.getMyUserInfo().prepare(this).subscribe {
             viewModel.userInfo.value = it
             navigation.getHeaderView(0).username.text = it.nickname ?: "Unknown"
+            defaultSharedPreferences.edit { putInt("userid", it.id) }
         }
         RecipieRetrofit.auth.getMyFollowers().prepare(this).subscribe {
             viewModel.followers.value = it
