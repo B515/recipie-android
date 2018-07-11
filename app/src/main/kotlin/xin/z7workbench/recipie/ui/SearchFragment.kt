@@ -23,19 +23,19 @@ import xin.z7workbench.recipie.entity.Recipe
 class SearchFragment : Fragment() {
     lateinit var v: View
     lateinit var historyAdapter: HistoryAdapter
-    lateinit var searchResultAdapter: SearchResultAdapter
+    lateinit var recipeAdapter: RecipeResultAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         v = inflater.inflate(R.layout.layout_search, container, false)
 
         historyAdapter = HistoryAdapter(requireActivity().defaultSharedPreferences.getStringSet("history", setOf()).toMutableList())
-        searchResultAdapter = SearchResultAdapter()
+        recipeAdapter = RecipeResultAdapter()
 
         v.apply {
             back.setOnClickListener { activity?.onBackPressed() }
 
             histories.adapter = historyAdapter
-            result.adapter = searchResultAdapter
+            result.adapter = recipeAdapter
 
             keyword.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
@@ -72,9 +72,9 @@ class SearchFragment : Fragment() {
         RecipieRetrofit.recipe.searchByKeyword(keyword).prepare(context!!).subscribe {
             v.history_layout.visibility = View.GONE
 
-            searchResultAdapter.list = it
+            recipeAdapter.list = it
             if (it.isEmpty()) requireActivity().toast(R.string.no_result)
-            searchResultAdapter.notifyDataSetChanged()
+            recipeAdapter.notifyDataSetChanged()
         }
     }
 
@@ -103,7 +103,7 @@ class SearchFragment : Fragment() {
     }
     class HistoryViewHolder(val v: View) : RecyclerView.ViewHolder(v)
 
-    class SearchResultAdapter(var list: List<Recipe> = listOf()) : RecyclerView.Adapter<SearchResultAdapter.SearchResultViewHolder>() {
+    class RecipeResultAdapter(var list: List<Recipe> = listOf()) : RecyclerView.Adapter<RecipeResultAdapter.SearchResultViewHolder>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
                 SearchResultViewHolder(LayoutInflater.from(parent.context)
                         .inflate(R.layout.item_recipe, parent, false))

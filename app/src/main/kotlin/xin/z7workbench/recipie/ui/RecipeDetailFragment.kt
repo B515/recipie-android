@@ -11,6 +11,7 @@ import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.google.android.material.chip.Chip
 import kotlinx.android.synthetic.main.item_comment.view.*
 import kotlinx.android.synthetic.main.layout_recipe_detail.view.*
 import org.jetbrains.anko.toast
@@ -36,6 +37,15 @@ class RecipeDetailFragment : Fragment() {
                 like.visibility = View.GONE
                 favorite.visibility = View.GONE
                 comments.adapter = CommentAdapter(recipe.comment_set ?: listOf())
+                recipe.tag?.forEach {
+                    val chip = Chip(this@RecipeDetailFragment.context)
+                    chip.text = it.title
+                    chip.setPadding(16, 10, 16, 10)
+                    val bundle = Bundle()
+                    bundle.putInt("id", it.id)
+                    chip.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.action_recipeDetailFragment_to_tagFragment, bundle))
+                    tags.addView(chip)
+                }
 
                 author.text = recipe.create_by?.nickname ?: "Unknown"
                 likes.text = "${recipe.like_count}${context.getString(R.string.like_tail)} ${recipe.read_count}${context.getString(R.string.read_tail)}"

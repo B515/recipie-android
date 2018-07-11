@@ -40,7 +40,7 @@ interface AuthAPI {
     fun unfollow(@Path("id") id: Int): Flowable<Result>
 
     @GET("/api/users/followers/")
-    fun getMyFollowers():Flowable<List<UserInfo>>
+    fun getMyFollowers(): Flowable<List<UserInfo>>
 }
 
 interface RecipeAPI {
@@ -75,6 +75,9 @@ interface RecipeAPI {
 
     @GET("/api/tags/")
     fun getAllTags(): Flowable<List<Tag>>
+
+    @GET("/api/tags/{id}/")
+    fun getTag(@Path("id") id: Int): Flowable<Tag>
 
     @FormUrlEncoded
     @POST("/api/comments/")

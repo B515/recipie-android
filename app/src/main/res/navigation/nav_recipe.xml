@@ -27,10 +27,21 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_recipeDetailFragment_to_tagFragment"
+            app:destination="@id/tagFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
     <fragment
         android:id="@+id/recipeCommentFragment"
         android:name="xin.z7workbench.recipie.ui.RecipeCommentFragment"
-        tools:layout="@layout/layout_recipe_comment"
-        android:label="RecipeCommentFragment" />
+        android:label="RecipeCommentFragment"
+        tools:layout="@layout/layout_recipe_comment" />
+    <fragment
+        android:id="@+id/tagFragment"
+        android:name="xin.z7workbench.recipie.ui.TagFragment"
+        android:label="TagFragment" />
 </navigation>
