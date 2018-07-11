@@ -13,6 +13,7 @@ import kotlinx.android.synthetic.main.item_histories.view.*
 import kotlinx.android.synthetic.main.item_recipe.view.*
 import kotlinx.android.synthetic.main.layout_search.view.*
 import org.jetbrains.anko.defaultSharedPreferences
+import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
 import xin.z7workbench.recipie.R
 import xin.z7workbench.recipie.api.RecipieRetrofit
@@ -116,10 +117,13 @@ class SearchFragment : Fragment() {
                 read_count.text = "${list[position].read_count}${context.getString(R.string.read_tail)}"
                 description.text = list[position].description
                 author.text = list[position].create_by?.nickname ?: "Unknown"
+
+                recipe_view.setOnClickListener {
+                    context.startActivity<RecipeActivity>("recipe_id" to list[position].id)
+                }
             }
         }
 
         class SearchResultViewHolder(val v: View) : RecyclerView.ViewHolder(v)
     }
 }
-
