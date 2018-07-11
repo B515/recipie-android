@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.google.android.material.chip.Chip
 import com.google.gson.Gson
 import com.zhihu.matisse.Matisse
 import kotlinx.android.synthetic.main.activity_edit_recipe.*
@@ -26,6 +27,7 @@ class EditRecipeActivity : AppCompatActivity() {
 
     lateinit var recipesAdapter: RecipesAdapter
     val list: MutableList<RecipeStep> = mutableListOf()
+    val tagIds = mutableListOf<Int>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +36,18 @@ class EditRecipeActivity : AppCompatActivity() {
         toolbar.setNavigationOnClickListener { onBackPressed() }
         recipesAdapter = RecipesAdapter()
         recycler.adapter = recipesAdapter
+
+        RecipieRetrofit.recipe.getAllTags().prepare(this).subscribe {
+            it.forEach {
+                val chip = layoutInflater.inflate(R.layout.item_chip, tags, false) as Chip
+                chip.text = it.title
+                chip.setOnCheckedChangeListener { _, checked ->
+                    if (checked) tagIds.add(it.id) else tagIds.remove(it.id)
+                }
+                tags.addView(chip)
+            }
+        }
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -53,7 +67,8 @@ class EditRecipeActivity : AppCompatActivity() {
                 for (i in 0 until list.size) {
                     list[i].description = recycler.findViewHolderForAdapterPosition(i)?.itemView?.description?.text.toString()
                 }
-                if (name.text.toString() == "" || description.text.toString() == "" || list.any { it.description == "" }) {
+                val tagString = tagIds.joinToString(",")
+                if (name.text.toString() == "" || description.text.toString() == "" || tagString == "" || list.any { it.description == "" }) {
                     toast("请完成填写")
                     return true
                 }
@@ -61,9 +76,8 @@ class EditRecipeActivity : AppCompatActivity() {
                     toast("正在上传，请稍等")
                     return true
                 }
-                //TODO Add tags
                 val content = Gson().toJson(list)
-                RecipieRetrofit.recipe.createRecipe(name.text.toString(), content, description.text.toString(), "1").prepare(this).subscribe {
+                RecipieRetrofit.recipe.createRecipe(name.text.toString(), content, description.text.toString(), tagString).prepare(this).subscribe {
                     toast("创建成功")
                     finish()
                 }
