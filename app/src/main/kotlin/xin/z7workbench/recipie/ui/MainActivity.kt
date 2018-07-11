@@ -43,7 +43,10 @@ class MainActivity : AppCompatActivity() {
 
     fun updateUserInfo() {
         val viewModel = ViewModelProviders.of(this)[UserInfoViewModel::class.java]
-        RecipieRetrofit.auth.getMyUserInfo().prepare(this).subscribe { viewModel.userInfo.value = it }
+        RecipieRetrofit.auth.getMyUserInfo().prepare(this).subscribe {
+            viewModel.userInfo.value = it
+            navigation.getHeaderView(0).username.text = it.nickname ?: "Unknown"
+        }
     }
 
     @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
