@@ -23,10 +23,16 @@
         android:title="个人信息"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/followFragment"
+        android:id="@+id/followingFragment2"
         android:icon="@drawable/ic_addressbook_fill"
         android:orderInCategory="2"
         android:title="关注列表"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/followerFragment2"
+        android:icon="@drawable/ic_addressbook_fill"
+        android:orderInCategory="2"
+        android:title="粉丝列表"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/favoriteFragment"

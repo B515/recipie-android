@@ -30,10 +30,24 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_userInfoFragment_to_followerFragment2"
+            app:destination="@id/followerFragment2"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_userInfoFragment_to_followingFragment2"
+            app:destination="@id/followingFragment2"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
     <fragment
         android:id="@+id/followFragment"
-        android:name="xin.z7workbench.recipie.ui.FollowFragment"
+        android:name="xin.z7workbench.recipie.ui.FollowingFragment"
         android:label="FollowFragment"
         tools:layout="@layout/fragment_recycler" />
     <fragment
@@ -74,4 +88,14 @@
         android:name="xin.z7workbench.recipie.ui.TagFragment"
         android:label="TagFragment"
         tools:layout="@layout/layout_tag" />
+    <fragment
+        android:id="@+id/followerFragment2"
+        android:name="xin.z7workbench.recipie.ui.FollowerFragment"
+        android:label="FollowerFragment"
+        tools:layout="@layout/fragment_recycler" />
+    <fragment
+        android:id="@+id/followingFragment2"
+        android:name="xin.z7workbench.recipie.ui.FollowingFragment"
+        android:label="FollowingFragment"
+        tools:layout="@layout/fragment_recycler" />
 </navigation>

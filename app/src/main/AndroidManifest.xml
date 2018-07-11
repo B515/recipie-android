@@ -28,6 +28,9 @@
         <activity
             android:name=".ui.RecipeActivity"
             android:label="@string/recipe_detail" />
+        <activity
+            android:name=".ui.UserInfoActivity"
+            android:label="用户详情" />
     </application>
 
 </manifest>

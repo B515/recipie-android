@@ -19,19 +19,11 @@ class UserInfoFragment : Fragment() {
         val model = ViewModelProviders.of(requireActivity())[UserInfoViewModel::class.java]
         model.userInfo.observe(this, Observer {
             it ?: return@Observer
-
-            view.apply {
-                username.text = it.nickname
-                Glide.with(this).load(it.avatar).apply(RequestOptions.circleCropTransform()).into(avatar)
-                followers.text = "${it.recipe_created?.size ?: 0}个菜谱 ${it.friends?.size
-                        ?: 0}人关注 ${model.followers.value?.size ?: 0}人粉丝"
-
-                val adapter = SearchFragment.RecipeResultAdapter()
-                recycler.adapter = adapter
-                adapter.list = it.recipe_created ?: listOf()
-                adapter.notifyDataSetChanged()
-            }
-
+            update(view, model)
+        })
+        model.followers.observe(this, Observer {
+            it ?: return@Observer
+            update(view, model)
         })
         view.apply {
             Glide.with(this).load(R.drawable.login_bg).into(bg)
@@ -43,5 +35,32 @@ class UserInfoFragment : Fragment() {
             editor.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.action_userInfoFragment_to_editInfoFragment))
         }
         return view
+    }
+
+    fun update(view: View, model: UserInfoViewModel) {
+        val u = model.userInfo.value!!
+        view.apply {
+            username.text = u.nickname
+            Glide.with(this).load(u.avatar).apply(RequestOptions.circleCropTransform()).into(avatar)
+            recipes_count.text = "${u.recipe_created?.size ?: 0}个菜谱"
+            following_count.text = " ${u.friends?.size ?: 0}人关注"
+            follower_count.text = "${model.followers.value?.size ?: 0}人粉丝"
+            when (activity) {
+                is UserInfoActivity -> {
+                    following_count.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.action_userInfoFragment2_to_followingFragment))
+                    follower_count.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.action_userInfoFragment2_to_followerFragment))
+                }
+                is MainActivity -> {
+                    following_count.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.action_userInfoFragment_to_followingFragment2))
+                    follower_count.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.action_userInfoFragment_to_followerFragment2))
+                }
+            }
+
+            val adapter = SearchFragment.RecipeResultAdapter()
+            recycler.adapter = adapter
+            adapter.list = u.recipe_created ?: listOf()
+            adapter.notifyDataSetChanged()
+        }
+
     }
 }
