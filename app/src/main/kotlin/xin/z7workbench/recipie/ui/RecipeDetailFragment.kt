@@ -8,12 +8,16 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.Navigation
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
+import kotlinx.android.synthetic.main.item_comment.view.*
 import kotlinx.android.synthetic.main.layout_recipe_detail.view.*
 import org.jetbrains.anko.toast
 import xin.z7workbench.recipie.R
 import xin.z7workbench.recipie.api.RecipieRetrofit
 import xin.z7workbench.recipie.api.prepare
+import xin.z7workbench.recipie.entity.Comment
 
 class RecipeDetailFragment : Fragment() {
 
@@ -31,6 +35,10 @@ class RecipeDetailFragment : Fragment() {
                 description.text = it.description
                 like.visibility = View.GONE
                 favorite.visibility = View.GONE
+                comments.adapter = CommentAdapter(it.comment_set ?: listOf())
+
+                author.text = it.create_by?.nickname ?: "Unknown"
+                likes.text = "${it.like_count}${context.getString(R.string.like_tail)} ${it.read_count}${context.getString(R.string.read_tail)}"
 
                 like.setOnClickListener {
                     RecipieRetrofit.recipe.likeRecipe(it.id).prepare(context).subscribe { context.toast("已点赞") }
@@ -55,5 +63,35 @@ class RecipeDetailFragment : Fragment() {
             }
         })
         return view
+    }
+
+    class CommentAdapter(var list: List<Comment> = listOf()) : RecyclerView.Adapter<CommentAdapter.CommentViewHolder>() {
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+                CommentViewHolder(LayoutInflater.from(parent.context)
+                        .inflate(R.layout.item_comment, parent, false))
+
+        override fun getItemCount() = list.size
+
+        override fun onBindViewHolder(holder: CommentViewHolder, position: Int) {
+            holder.v.apply {
+                comment_author.text = list[position].user?.nickname ?: "Unknown"
+                Glide.with(this).load(list[position].user?.avatar).apply(RequestOptions.circleCropTransform()).into(author_avatar)
+                comment_content.text = list[position].content
+                comment_like_count.text = list[position].like_count.toString()
+                
+                comment_like.setOnClickListener {
+                    // TODO API
+                    comment_like.visibility = View.GONE
+                    comment_not_like.visibility = View.VISIBLE
+                }
+                comment_not_like.setOnClickListener {
+                    // TODO API
+                    comment_not_like.visibility = View.GONE
+                    comment_like.visibility = View.VISIBLE
+                }
+            }
+        }
+
+        class CommentViewHolder(val v: View) : RecyclerView.ViewHolder(v)
     }
 }
