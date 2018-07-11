@@ -33,11 +33,9 @@ interface AuthAPI {
     @GET("/api/users/{id}/")
     fun getUserInfo(@Path("id") id: Int): Flowable<UserInfo>
 
-    @FormUrlEncoded
     @POST("/api/users/{id}/follow/")
     fun follow(@Path("id") id: Int): Flowable<Result>
 
-    @FormUrlEncoded
     @POST("/api/users/{id}/unfollow/")
     fun unfollow(@Path("id") id: Int): Flowable<Result>
 
@@ -63,19 +61,15 @@ interface RecipeAPI {
     @GET("/api/recipes/search_by_keyword/")
     fun searchByKeyword(@Query("keyword") keyword: String): Flowable<List<Recipe>>
 
-    @FormUrlEncoded
     @POST("/api/recipes/{id}/like/")
-    fun likeRecipe(@Field("id") id: Int): Flowable<Result>
+    fun likeRecipe(@Path("id") id: Int): Flowable<Result>
 
-    @FormUrlEncoded
     @POST("/api/recipes/{id}/unlike/")
-    fun unlikeRecipe(@Field("id") id: Int): Flowable<Result>
+    fun unlikeRecipe(@Path("id") id: Int): Flowable<Result>
 
-    @FormUrlEncoded
     @POST("/api/recipes/{id}/collect/")
     fun collectRecipe(@Path("id") id: Int): Flowable<Result>
 
-    @FormUrlEncoded
     @POST("/api/recipes/{id}/uncollect/")
     fun uncollectRecipe(@Path("id") id: Int): Flowable<Result>
 
@@ -86,13 +80,11 @@ interface RecipeAPI {
     @POST("/api/comments/")
     fun createComment(@Field("recipe") id: Int, @Field("content") content: String, @Field("userinfo") userinfo: Int = 1): Flowable<Comment>
 
-    @FormUrlEncoded
     @POST("/api/comments/{id}/like/")
-    fun likeComment(@Field("id") id: Int): Flowable<Result>
+    fun likeComment(@Path("id") id: Int): Flowable<Result>
 
-    @FormUrlEncoded
     @POST("/api/comments/{id}/unlike/")
-    fun unlikeComment(@Field("id") id: Int): Flowable<Result>
+    fun unlikeComment(@Path("id") id: Int): Flowable<Result>
 
     @Multipart
     @POST("/api/files/")

@@ -38,7 +38,7 @@ data class Recipe(val id: Int, var title: String, var description: String, var c
                   val create_by: UserInfo?, val comment_set: List<Comment>?, val tag: List<Tag>?,
                   val read_count: Int, val like_count: Int, val collect_count: Int)
 
-data class Comment(val id: Int, val recipe: Recipe?, val user: UserInfo?, val like_count: Int,
+data class Comment(val id: Int, val recipe: Recipe?, val userinfo: UserInfo?, val like_count: Int,
                    var content: String)
 
 data class Tag(val id: Int, val title: String, val description: String, val recipe_set: List<Recipe>?)
