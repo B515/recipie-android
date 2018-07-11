@@ -101,6 +101,7 @@ class SearchFragment : Fragment() {
         }
 
     }
+
     class HistoryViewHolder(val v: View) : RecyclerView.ViewHolder(v)
 
     class RecipeResultAdapter(var list: List<Recipe> = listOf()) : RecyclerView.Adapter<RecipeResultAdapter.RecipeResultViewHolder>() {
@@ -115,6 +116,7 @@ class SearchFragment : Fragment() {
                 title.text = list[position].title
                 like_count.text = "${list[position].like_count}${context.getString(R.string.like_tail)}"
                 read_count.text = "${list[position].read_count}${context.getString(R.string.read_tail)}"
+                collect_count.text = "${list[position].collect_count}人收藏"
                 description.text = list[position].description
                 author.text = list[position].create_by?.nickname ?: "Unknown"
 
