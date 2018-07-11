@@ -1,5 +1,6 @@
 package xin.z7workbench.recipie.ui
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
@@ -17,6 +18,8 @@ import com.zhihu.matisse.Matisse
 import kotlinx.android.synthetic.main.layout_edit_info.view.*
 import org.jetbrains.anko.selector
 import org.jetbrains.anko.toast
+import permissions.dispatcher.NeedsPermission
+import permissions.dispatcher.RuntimePermissions
 import xin.z7workbench.recipie.R
 import xin.z7workbench.recipie.api.RecipieRetrofit
 import xin.z7workbench.recipie.api.prepare
@@ -24,6 +27,7 @@ import xin.z7workbench.recipie.entity.UserInfo
 import xin.z7workbench.recipie.util.MatisseUtil.select
 import xin.z7workbench.recipie.util.uploadRequest
 
+@RuntimePermissions
 class EditInfoFragment : Fragment() {
     var uris = listOf<Uri>()
     private val REQUEST_CODE = 1
@@ -49,7 +53,7 @@ class EditInfoFragment : Fragment() {
 
                 Glide.with(this).load(user.avatar).into(avatar)
                 avatar.setOnClickListener {
-                    Matisse.from(this@EditInfoFragment).select(1, REQUEST_CODE)
+                    loadAvatarWithPermissionCheck()
                 }
 
                 confirm.setOnClickListener {
@@ -66,6 +70,9 @@ class EditInfoFragment : Fragment() {
         })
         return v
     }
+
+    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+    fun loadAvatar() = Matisse.from(this@EditInfoFragment).select(1, REQUEST_CODE)
 
     private fun updateMyUserInfo(user: UserInfo) {
         RecipieRetrofit.auth.updateMyUserInfo(user.nickname, user.gender, user.avatar).prepare(requireContext()).subscribe {
