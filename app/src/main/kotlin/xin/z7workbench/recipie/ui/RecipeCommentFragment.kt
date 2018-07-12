@@ -11,18 +11,21 @@ import kotlinx.android.synthetic.main.layout_recipe_comment.view.*
 import org.jetbrains.anko.toast
 import xin.z7workbench.recipie.R
 import xin.z7workbench.recipie.api.RecipieRetrofit
+import xin.z7workbench.recipie.api.prepare
 
 class RecipeCommentFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.layout_recipe_comment, container, false)
         val model = ViewModelProviders.of(requireActivity())[RecipeViewModel::class.java]
-        model.recipe.observe(this, Observer {
+        model.recipe.observe(this, Observer { recipe ->
+            recipe ?: return@Observer
             view.apply {
                 send.setOnClickListener {
-                    RecipieRetrofit.recipe.createComment(it.id, comment.text.toString())
-                    activity?.toast("发送成功！")
-                    activity?.onBackPressed()
+                    RecipieRetrofit.recipe.createComment(recipe.id, comment.text.toString()).prepare(context).subscribe {
+                        activity?.toast("发送成功！")
+                        activity?.onBackPressed()
+                    }
                 }
             }
         })
