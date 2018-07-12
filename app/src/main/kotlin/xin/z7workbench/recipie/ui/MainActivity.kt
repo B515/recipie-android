@@ -72,10 +72,6 @@ class MainActivity : AppCompatActivity() {
             launchChatWithPermissionCheck()
             true
         }
-        R.id.action_recipe -> {
-            startActivity<RecipeActivity>("recipe_id" to 12)
-            true
-        }
         else -> super.onOptionsItemSelected(item)
     }
 

@@ -11,10 +11,4 @@
         android:title="chat"
         app:showAsAction="ifRoom" />
 
-    <item
-        android:id="@+id/action_recipe"
-        android:icon="@drawable/ic_order"
-        android:orderInCategory="3"
-        android:title="recipe"
-        app:showAsAction="ifRoom" />
 </menu>
