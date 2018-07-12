@@ -38,7 +38,7 @@ class UserInfoFragment : Fragment() {
     }
 
     fun update(view: View, model: UserInfoViewModel) {
-        val u = model.userInfo.value!!
+        val u = model.userInfo.value ?: return
         view.apply {
             username.text = u.nickname
             Glide.with(this).load(u.avatar).apply(RequestOptions.circleCropTransform()).into(avatar)

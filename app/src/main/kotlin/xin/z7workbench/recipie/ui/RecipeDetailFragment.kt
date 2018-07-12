@@ -15,6 +15,7 @@ import com.google.android.material.chip.Chip
 import kotlinx.android.synthetic.main.item_comment.view.*
 import kotlinx.android.synthetic.main.layout_recipe_detail.view.*
 import org.jetbrains.anko.defaultSharedPreferences
+import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
 import xin.z7workbench.recipie.R
 import xin.z7workbench.recipie.api.RecipieRetrofit
@@ -49,6 +50,9 @@ class RecipeDetailFragment : Fragment() {
                 }
 
                 author.text = recipe.create_by?.nickname ?: "Unknown"
+                author.setOnClickListener {
+                    context.startActivity<UserInfoActivity>("id" to (recipe.create_by?.id ?: 0))
+                }
                 likes.text = "${recipe.like_count}${context.getString(R.string.like_tail)} ${recipe.read_count}${context.getString(R.string.read_tail)}"
 
                 val userid = context.defaultSharedPreferences.getInt("userid", 0)
@@ -104,6 +108,14 @@ class RecipeDetailFragment : Fragment() {
             holder.v.apply {
                 comment_author.text = list[position].userinfo?.nickname ?: "Unknown"
                 Glide.with(this).load(list[position].userinfo?.avatar).apply(RequestOptions.circleCropTransform()).into(author_avatar)
+                comment_author.setOnClickListener {
+                    context.startActivity<UserInfoActivity>("id" to (list[position].userinfo?.id
+                            ?: 0))
+                }
+                author_avatar.setOnClickListener {
+                    context.startActivity<UserInfoActivity>("id" to (list[position].userinfo?.id
+                            ?: 0))
+                }
                 comment_content.text = list[position].content
                 comment_like_count.text = list[position].like_count.toString()
 
