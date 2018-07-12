@@ -55,6 +55,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        updateUserInfo()
+    }
+
     @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     fun editRecipe() = startActivity<EditRecipeActivity>()
 

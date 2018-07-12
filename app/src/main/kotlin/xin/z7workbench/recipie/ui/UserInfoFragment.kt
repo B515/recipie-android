@@ -11,7 +11,10 @@ import androidx.navigation.Navigation
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import kotlinx.android.synthetic.main.fragment_user_info.view.*
+import org.jetbrains.anko.toast
 import xin.z7workbench.recipie.R
+import xin.z7workbench.recipie.api.RecipieRetrofit
+import xin.z7workbench.recipie.api.prepare
 
 class UserInfoFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -47,6 +50,28 @@ class UserInfoFragment : Fragment() {
             follower_count.text = "${model.followers.value?.size ?: 0}人粉丝"
             when (activity) {
                 is UserInfoActivity -> {
+                    editor.visibility = View.INVISIBLE
+                    RecipieRetrofit.auth.getMyUserInfo().prepare(view.context).subscribe {
+                        if (it.friends?.any { it.id == u.id } == true) {
+                            unfollow.visibility = View.VISIBLE
+                            unfollow.setOnClickListener {
+                                RecipieRetrofit.auth.unfollow(u.id).prepare(view.context).subscribe {
+                                    context.toast("已取消关注")
+                                    unfollow.visibility = View.GONE
+                                    follow.visibility = View.VISIBLE
+                                }
+                            }
+                        } else {
+                            follow.visibility = View.VISIBLE
+                            follow.setOnClickListener {
+                                RecipieRetrofit.auth.follow(u.id).prepare(view.context).subscribe {
+                                    context.toast("已关注")
+                                    unfollow.visibility = View.VISIBLE
+                                    follow.visibility = View.GONE
+                                }
+                            }
+                        }
+                    }
                     following_count.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.action_userInfoFragment2_to_followingFragment))
                     follower_count.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.action_userInfoFragment2_to_followerFragment))
                 }

@@ -14,6 +14,7 @@ class UserInfoActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_userinfo)
         setSupportActionBar(toolbar)
+        toolbar.setNavigationOnClickListener { onBackPressed() }
 
         val id = intent.extras.getInt("id")
         updateUserInfo(id)
